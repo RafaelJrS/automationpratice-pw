@@ -1,4 +1,5 @@
 import { type Locator, type Page, expect } from '@playwright/test';
+import { AlertModal } from '../components/AlertModal';
 
 export class HomePage {
   readonly page: Page;
@@ -9,9 +10,7 @@ export class HomePage {
   readonly searchOpenIcon: Locator;
   readonly searchInput: Locator;
   readonly searchSubmitButton: Locator;
-  readonly swalTitle: Locator;
-  readonly swalHtmlContainer: Locator;
-  readonly swalConfirmButton: Locator;
+  readonly alert: AlertModal;
 
   constructor(page: Page) {
     this.page = page;
@@ -22,9 +21,7 @@ export class HomePage {
     this.searchOpenIcon = page.locator('a.search_width').first();
     this.searchInput = page.getByPlaceholder('type keyword(s) here');
     this.searchSubmitButton = page.getByRole('button', { name: 'Search' });
-    this.swalTitle = page.locator('#swal2-title');
-    this.swalHtmlContainer = page.locator('#swal2-html-container');
-    this.swalConfirmButton = page.locator('.swal2-confirm');
+    this.alert = new AlertModal(page);
   }
 
   async goto(): Promise<void> {
@@ -52,9 +49,9 @@ export class HomePage {
   }
 
   async expectNewsletterSuccess(): Promise<void> {
-    await expect(this.swalTitle).toHaveText('Success');
-    await expect(this.swalHtmlContainer).toContainText('Thank you for your Subscribtion');
-    await this.swalConfirmButton.click();
+    await expect(this.alert.title).toHaveText('Success');
+    await expect(this.alert.text).toContainText('Thank you for your Subscribtion');
+    await this.alert.confirmButton.click();
   }
 
   async searchProductAndExpectSuccess(
@@ -65,9 +62,9 @@ export class HomePage {
     await this.searchOpenIcon.click();
     await this.searchInput.fill(keyword);
     await this.searchSubmitButton.click();
-    await expect(this.swalTitle).toHaveText(expectedTitle);
-    await expect(this.swalHtmlContainer).toHaveText(expectedText);
-    await this.swalConfirmButton.click();
+    await expect(this.alert.title).toHaveText(expectedTitle);
+    await expect(this.alert.text).toHaveText(expectedText);
+    await this.alert.confirmButton.click();
     await expect(this.page).toHaveURL(/\/shop/);
   }
 }

@@ -1,8 +1,8 @@
-# Plano de Testes: Passo 6 — Carrinho Avançado, Catálogo/Variações de Produto e Produto Inexistente
+# Plano de Testes: Passo 6 — Carrinho Avançado, Catálogo e Variações de Produto
 
 ## Contexto da Aplicação
 - **URL Base:** `https://automationpratice.com.br`
-- **Objetivo:** Validar cenários avançados de cálculo dinâmico de quantidades/totais no carrinho (`/cart` e `/cartTwo`), interação pelo Mini-Carrinho lateral (Offcanvas Drawer), ordenação e Quick View na vitrine da loja (`/shop`), seleção de variações de produto (Tamanho, Cor e aumento de quantidade) e tratamento de erro para produto inexistente (`/product-details-one/99999`).
+- **Objetivo:** Validar cenários avançados de cálculo dinâmico de quantidades/totais no carrinho (`/cart` e `/cartTwo`), interação pelo Mini-Carrinho lateral (Offcanvas Drawer), ordenação e adição direta pela vitrine da loja (`/shop`), seleção de variações de produto (Tamanho, Cor e aumento de quantidade) e o Layout 2 de detalhes do produto (`/product-details-two/1`).
 
 ---
 
@@ -35,7 +35,7 @@
 
 ---
 
-## Parte B: Catálogo da Loja (`/shop`), Variações de Produto e Produto Inexistente
+## Parte B: Catálogo da Loja (`/shop`), Variações de Produto e Layout Alternativo
 
 ### Cenário 4: Ordenação de produtos, abertura do modal Quick View e adição ao carrinho direto pela vitrine (`/shop`)
 **Estado Inicial:** Usuário acessa `/shop`.
@@ -56,9 +56,10 @@
 **Critério de Sucesso:**
 - O tamanho selecionado é `xl`, o radio de cor `Green` fica marcado, o campo de quantidade exibe `2` e o modal `Success!` confirma a adição ao carrinho.
 
-### Cenário 6: Tratamento de erro ao acessar ID de Produto Inexistente (`/product-details-one/99999`)
-**Estado Inicial:** Usuário navega para uma URL de produto com ID inexistente (`/product-details-one/99999`).
+### Cenário 6: Layout 2 de Detalhes do Produto (`/product-details-two/1`) e adição ao carrinho
+**Estado Inicial:** Usuário navega para o template alternativo de detalhes do produto (`/product-details-two/1`).
 **Passos:**
-1. Aguardar a renderização da tela de fallback de produto não encontrado.
+1. Validar o título do produto (`Green Dress For Woman`).
+2. Clicar no botão `Add To Cart`.
 **Critério de Sucesso:**
-- Exibição do título `PRODUCT NOT FOUND`, subtítulo `Sorry Mate... No Item Found according to Your query!` e botão `Continue Shopping` direcionando para `/shop`.
+- Exibição do modal SweetAlert2 com título `Success!` e mensagem `Successfully added to your Cart`.

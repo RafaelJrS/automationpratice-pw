@@ -1,20 +1,19 @@
 import { type Locator, type Page, expect } from '@playwright/test';
+import { AlertModal } from '../components/AlertModal';
 
 export class WishlistPage {
   readonly page: Page;
   readonly wishlistTable: Locator;
   readonly emptyWishlistHeading: Locator;
   readonly trashIcons: Locator;
-  readonly swalTitle: Locator;
-  readonly swalText: Locator;
+  readonly alert: AlertModal;
 
   constructor(page: Page) {
     this.page = page;
     this.wishlistTable = page.locator('#Wishlist_area table');
     this.emptyWishlistHeading = page.locator('#empty_cart_area h2');
     this.trashIcons = page.locator('#Wishlist_area tbody tr .product_remove i.fa-trash');
-    this.swalTitle = page.locator('#swal2-title');
-    this.swalText = page.locator('#swal2-html-container');
+    this.alert = new AlertModal(page);
   }
 
   async goto(): Promise<void> {
@@ -43,8 +42,8 @@ export class WishlistPage {
   async moveProductToCartFromWishlist(productName: string): Promise<void> {
     const row = this.wishlistTable.locator('tbody tr', { hasText: productName });
     await row.getByRole('button', { name: 'Add to cart' }).click();
-    await expect(this.swalTitle).toHaveText('Success!');
-    await expect(this.swalText).toContainText('Successfully added to your Cart');
+    await expect(this.alert.title).toHaveText('Success!');
+    await expect(this.alert.text).toContainText('Successfully added to your Cart');
   }
 
   async removeAllProductsFromWishlist(): Promise<void> {

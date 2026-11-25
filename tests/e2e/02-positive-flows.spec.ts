@@ -1,9 +1,9 @@
 // spec: specs/fluxos-positivos-e2e.md
 // seed: tests/seed.spec.ts
-import { test } from '../fixtures/pom.fixture';
-import { sampleProduct, validBilling, validUser } from '../test-data/ecommerce.data';
+import { test } from '../../fixtures/pom.fixture';
+import { sampleProduct, validBilling, validUser } from '../../test-data';
 
-test.describe('Passo 2 - Fluxos Positivos End-to-End (E-commerce Automation Practice)', () => {
+test.describe('Passo 2 - Fluxos Positivos End-to-End (E-commerce Automation Practice)', { tag: ['@regression', '@positive'] }, () => {
   test('Cenário 1: Deve realizar cadastro de novo usuário com sucesso', async ({
     homePage,
     registerPage,
@@ -19,7 +19,7 @@ test.describe('Passo 2 - Fluxos Positivos End-to-End (E-commerce Automation Prac
     await registerPage.expectRegisterSuccess(validUser.name);
   });
 
-  test('Cenário 2: Deve realizar login de usuário com sucesso', async ({
+  test('Cenário 2: Deve realizar login de usuário com sucesso', { tag: '@smoke' }, async ({
     homePage,
     loginPage,
   }) => {
@@ -34,7 +34,7 @@ test.describe('Passo 2 - Fluxos Positivos End-to-End (E-commerce Automation Prac
     await loginPage.expectLoginSuccess(validUser.email);
   });
 
-  test('Cenário 3: Deve adicionar um produto ao carrinho e validar mensagem de sucesso', async ({
+  test('Cenário 3: Deve adicionar um produto ao carrinho e validar mensagem de sucesso', { tag: '@smoke' }, async ({
     productPage,
     cartPage,
   }) => {
@@ -50,7 +50,7 @@ test.describe('Passo 2 - Fluxos Positivos End-to-End (E-commerce Automation Prac
     await cartPage.expectProductInCart(sampleProduct.name);
   });
 
-  test('Cenário 4: Jornada Completa E2E (Login -> Produto -> Carrinho -> Checkout -> Pedido Concluído)', async ({
+  test('Cenário 4: Jornada Completa E2E (Login -> Produto -> Carrinho -> Checkout -> Pedido Concluído)', { tag: '@smoke' }, async ({
     loginPage,
     productPage,
     cartPage,

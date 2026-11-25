@@ -1,14 +1,14 @@
 // spec: specs/wishlist-e-busca.md
 // seed: tests/seed.spec.ts
-import { test } from '../fixtures/pom.fixture';
+import { test } from '../../fixtures/pom.fixture';
 import {
   defaultWishlistProducts,
-  errorMessages,
+  scenarioData,
   sampleProduct,
-} from '../test-data/ecommerce.data';
+} from '../../test-data';
 
-test.describe('Passo 4 - Wishlist (Favoritos) e Busca de Produtos', () => {
-  test.describe('Parte A: Fluxos da Wishlist (Lista de Desejos / Favoritos)', () => {
+test.describe('Passo 4 - Wishlist (Favoritos) e Busca de Produtos', { tag: ['@regression'] }, () => {
+  test.describe('Parte A: Fluxos da Wishlist (Lista de Desejos / Favoritos)', { tag: ['@wishlist'] }, () => {
     test('Cenário 1: Deve adicionar um produto à Wishlist com sucesso e validar na lista de Favoritos', async ({
       productPage,
       wishlistPage,
@@ -19,8 +19,8 @@ test.describe('Passo 4 - Wishlist (Favoritos) e Busca de Produtos', () => {
 
       // 2. Clicar em "Add To Wishlist" e validar modal "Success" / "Added to Wishlist"
       await productPage.addToWishlistAndExpectModal(
-        errorMessages.wishlist.addedTitle,
-        errorMessages.wishlist.addedText
+        scenarioData.wishlist.addedTitle,
+        scenarioData.wishlist.addedText
       );
 
       // 3. Navegar para a Wishlist via SPA e validar que o produto consta na tabela
@@ -34,14 +34,14 @@ test.describe('Passo 4 - Wishlist (Favoritos) e Busca de Produtos', () => {
       // 1. Acessar o produto e adicioná-lo pela primeira vez aos favoritos
       await productPage.gotoProduct(sampleProduct.id);
       await productPage.addToWishlistAndExpectModal(
-        errorMessages.wishlist.addedTitle,
-        errorMessages.wishlist.addedText
+        scenarioData.wishlist.addedTitle,
+        scenarioData.wishlist.addedText
       );
 
       // 2. Clicar novamente em "Add To Wishlist" e validar modal "Failed" / "Already Added in Wishlist"
       await productPage.addToWishlistAndExpectModal(
-        errorMessages.wishlist.duplicateTitle,
-        errorMessages.wishlist.duplicateText
+        scenarioData.wishlist.duplicateTitle,
+        scenarioData.wishlist.duplicateText
       );
     });
 
@@ -88,11 +88,11 @@ test.describe('Passo 4 - Wishlist (Favoritos) e Busca de Produtos', () => {
       await wishlistPage.removeAllProductsFromWishlist();
 
       // 3. Validar a mensagem "YOUR WISHLIST IS EMPTY"
-      await wishlistPage.expectEmptyWishlistMessage(errorMessages.wishlist.emptyTitle);
+      await wishlistPage.expectEmptyWishlistMessage(scenarioData.wishlist.emptyTitle);
     });
   });
 
-  test.describe('Parte B: Fluxo de Busca de Produtos (Search Modal)', () => {
+  test.describe('Parte B: Fluxo de Busca de Produtos (Search Modal)', { tag: ['@search'] }, () => {
     test('Cenário 6: Deve pesquisar produto por palavra-chave no Search Modal e redirecionar para a loja', async ({
       homePage,
     }) => {
@@ -101,9 +101,9 @@ test.describe('Passo 4 - Wishlist (Favoritos) e Busca de Produtos', () => {
 
       // 2. Abrir o modal de busca, pesquisar pela palavra-chave "Dress" e validar modal "Success" / "Check out the Results" e redirecionamento para /shop
       await homePage.searchProductAndExpectSuccess(
-        errorMessages.search.keyword,
-        errorMessages.search.successTitle,
-        errorMessages.search.successText
+        scenarioData.search.keyword,
+        scenarioData.search.successTitle,
+        scenarioData.search.successText
       );
     });
   });

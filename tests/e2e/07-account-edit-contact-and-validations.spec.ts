@@ -1,14 +1,14 @@
 // spec: specs/edicao-conta-contato-404-e-validacoes.md
 // seed: tests/seed.spec.ts
-import { test } from '../fixtures/pom.fixture';
+import { test } from '../../fixtures/pom.fixture';
 import {
-  errorMessages,
+  scenarioData,
   invalidCredentials,
   validBilling,
-} from '../test-data/ecommerce.data';
+} from '../../test-data';
 
-test.describe('Passo 7 - Edição de Conta, Validações Negativas de Checkout/Formulários, Contato e 404', () => {
-  test.describe('Parte A: Edição de Conta (/account-edit) — Positivo e Negativo', () => {
+test.describe('Passo 7 - Edição de Conta, Validações Negativas de Checkout/Formulários, Contato e 404', { tag: ['@regression'] }, () => {
+  test.describe('Parte A: Edição de Conta (/account-edit) — Positivo e Negativo', { tag: ['@account'] }, () => {
     test('Cenário 1: Deve atualizar informações cadastrais e senha em /account-edit com sucesso', async ({
       accountEditPage,
     }) => {
@@ -17,11 +17,11 @@ test.describe('Passo 7 - Edição de Conta, Validações Negativas de Checkout/F
 
       // 2. Preencher nome, sobrenome, e-mail, senha atual e nova senha e submeter
       await accountEditPage.fillAndUpdateAccount(
-        errorMessages.accountEditAndContact.firstName,
-        errorMessages.accountEditAndContact.lastName,
-        errorMessages.accountEditAndContact.email,
-        errorMessages.accountEditAndContact.currentPass,
-        errorMessages.accountEditAndContact.newPass
+        scenarioData.accountEditAndContact.firstName,
+        scenarioData.accountEditAndContact.lastName,
+        scenarioData.accountEditAndContact.email,
+        scenarioData.accountEditAndContact.currentPass,
+        scenarioData.accountEditAndContact.newPass
       );
     });
 
@@ -36,7 +36,7 @@ test.describe('Passo 7 - Edição de Conta, Validações Negativas de Checkout/F
     });
   });
 
-  test.describe('Parte B: Checkout — Validação Negativa de E-mail e Métodos de Pagamento (/checkout-one)', () => {
+  test.describe('Parte B: Checkout — Validação Negativa de E-mail e Métodos de Pagamento (/checkout-one)', { tag: ['@checkout', '@negative'] }, () => {
     test('Cenário 3: Deve exibir erro específico de e-mail inválido no Checkout mesmo com demais campos preenchidos', async ({
       checkoutPage,
     }) => {
@@ -51,7 +51,7 @@ test.describe('Passo 7 - Edição de Conta, Validações Negativas de Checkout/F
 
       // 3. Validar erro "O campo E-mail deve ser prenchido ou é inválido" e bloqueio do salvamento
       await checkoutPage.expectInvalidEmailErrorOnly(
-        errorMessages.accountEditAndContact.checkoutInvalidEmailError
+        scenarioData.accountEditAndContact.checkoutInvalidEmailError
       );
     });
 
@@ -68,7 +68,7 @@ test.describe('Passo 7 - Edição de Conta, Validações Negativas de Checkout/F
     });
   });
 
-  test.describe('Parte C: Fale Conosco (/contact-two), Bloqueio no Order Tracking e Página 404 (/error)', () => {
+  test.describe('Parte C: Fale Conosco (/contact-two), Bloqueio no Order Tracking e Página 404 (/error)', { tag: ['@contact', '@negative'] }, () => {
     test('Cenário 5: Deve bloquear envio vazio e enviar mensagem de contato com sucesso em Contact Us (/contact-two)', async ({
       contactPage,
     }) => {
@@ -80,13 +80,13 @@ test.describe('Passo 7 - Edição de Conta, Validações Negativas de Checkout/F
 
       // 3. Preencher todos os dados de contato, enviar e validar modal "Thank You" / "We Got Your Message"
       await contactPage.fillAndSubmitContactForm(
-        errorMessages.accountEditAndContact.firstName,
-        errorMessages.accountEditAndContact.email,
-        errorMessages.accountEditAndContact.phone,
-        errorMessages.accountEditAndContact.subject,
-        errorMessages.accountEditAndContact.message,
-        errorMessages.accountEditAndContact.contactSuccessTitle,
-        errorMessages.accountEditAndContact.contactSuccessText
+        scenarioData.accountEditAndContact.firstName,
+        scenarioData.accountEditAndContact.email,
+        scenarioData.accountEditAndContact.phone,
+        scenarioData.accountEditAndContact.subject,
+        scenarioData.accountEditAndContact.message,
+        scenarioData.accountEditAndContact.contactSuccessTitle,
+        scenarioData.accountEditAndContact.contactSuccessText
       );
     });
 
@@ -101,8 +101,8 @@ test.describe('Passo 7 - Edição de Conta, Validações Negativas de Checkout/F
       // 2. Acessar a página 404 (/error), validar mensagens e clicar em "Back To Home Page"
       await error404Page.goto();
       await error404Page.expect404PageAndReturnHome(
-        errorMessages.accountEditAndContact.error404Title,
-        errorMessages.accountEditAndContact.error404Subtitle
+        scenarioData.accountEditAndContact.error404Title,
+        scenarioData.accountEditAndContact.error404Subtitle
       );
     });
   });

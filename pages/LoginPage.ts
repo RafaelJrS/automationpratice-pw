@@ -1,4 +1,5 @@
 import { type Locator, type Page, expect } from '@playwright/test';
+import { AlertModal } from '../components/AlertModal';
 
 export class LoginPage {
   readonly page: Page;
@@ -7,9 +8,7 @@ export class LoginPage {
   readonly loginButton: Locator;
   readonly rememberMeCheckbox: Locator;
   readonly invalidInputError: Locator;
-  readonly swalTitle: Locator;
-  readonly swalText: Locator;
-  readonly swalConfirmButton: Locator;
+  readonly alert: AlertModal;
 
   constructor(page: Page) {
     this.page = page;
@@ -18,9 +17,7 @@ export class LoginPage {
     this.loginButton = page.locator('#btnLogin');
     this.rememberMeCheckbox = page.locator('#materialUnchecked');
     this.invalidInputError = page.locator('.invalid_input');
-    this.swalTitle = page.locator('#swal2-title');
-    this.swalText = page.locator('#swal2-html-container');
-    this.swalConfirmButton = page.locator('.swal2-confirm');
+    this.alert = new AlertModal(page);
   }
 
   async goto(): Promise<void> {
@@ -34,9 +31,9 @@ export class LoginPage {
   }
 
   async expectLoginSuccess(email: string): Promise<void> {
-    await expect(this.swalTitle).toHaveText('Login realizado');
-    await expect(this.swalText).toHaveText(`Olá, ${email}`);
-    await this.swalConfirmButton.click();
+    await expect(this.alert.title).toHaveText('Login realizado');
+    await expect(this.alert.text).toHaveText(`Olá, ${email}`);
+    await this.alert.confirmButton.click();
     await expect(this.page).toHaveURL(/\/my-account/);
   }
 

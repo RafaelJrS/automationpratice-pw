@@ -1,16 +1,16 @@
 // spec: specs/fluxos-remocao-e-erros.md
 // seed: tests/seed.spec.ts
-import { test } from '../fixtures/pom.fixture';
+import { test } from '../../fixtures/pom.fixture';
 import {
   defaultCartProducts,
-  errorMessages,
+  scenarioData,
   invalidCredentials,
   sampleProduct,
   validUser,
-} from '../test-data/ecommerce.data';
+} from '../../test-data';
 
-test.describe('Passo 3 - Fluxos de Remoção do Carrinho e Mensagens de Erro', () => {
-  test.describe('Parte A: Fluxos de Remoção do Carrinho', () => {
+test.describe('Passo 3 - Fluxos de Remoção do Carrinho e Mensagens de Erro', { tag: ['@regression'] }, () => {
+  test.describe('Parte A: Fluxos de Remoção do Carrinho', { tag: ['@cart', '@removal'] }, () => {
     test('Cenário 1: Deve remover um item individual da tabela do carrinho', async ({
       cartPage,
     }) => {
@@ -38,13 +38,13 @@ test.describe('Passo 3 - Fluxos de Remoção do Carrinho e Mensagens de Erro', (
 
       // 3. Validar a exibição da mensagem "YOUR CART IS EMPTY" / "Sorry Mate... No Item Found Inside Your Cart!"
       await cartPage.expectEmptyCartMessage(
-        errorMessages.cart.emptyTitle,
-        errorMessages.cart.emptySubtitle
+        scenarioData.cart.emptyTitle,
+        scenarioData.cart.emptySubtitle
       );
     });
   });
 
-  test.describe('Parte B: Mensagens de Erro no Login', () => {
+  test.describe('Parte B: Mensagens de Erro no Login', { tag: ['@auth', '@negative'] }, () => {
     test('Cenário 3: Deve exibir erro "E-mail inválido." ao tentar logar com e-mail vazio ou inválido', async ({
       loginPage,
     }) => {
@@ -55,7 +55,7 @@ test.describe('Passo 3 - Fluxos de Remoção do Carrinho e Mensagens de Erro', (
       await loginPage.login(invalidCredentials.invalidEmail, validUser.password);
 
       // 3. Validar mensagem de erro "E-mail inválido."
-      await loginPage.expectLoginError(errorMessages.login.invalidEmail);
+      await loginPage.expectLoginError(scenarioData.login.invalidEmail);
     });
 
     test('Cenário 4: Deve exibir erro "Senha inválida." ao tentar logar com senha menor que 6 dígitos', async ({
@@ -68,11 +68,11 @@ test.describe('Passo 3 - Fluxos de Remoção do Carrinho e Mensagens de Erro', (
       await loginPage.login(validUser.email, invalidCredentials.shortPassword);
 
       // 3. Validar mensagem de erro "Senha inválida."
-      await loginPage.expectLoginError(errorMessages.login.invalidPassword);
+      await loginPage.expectLoginError(scenarioData.login.invalidPassword);
     });
   });
 
-  test.describe('Parte C: Mensagens de Erro no Cadastro de Usuário', () => {
+  test.describe('Parte C: Mensagens de Erro no Cadastro de Usuário', { tag: ['@auth', '@negative'] }, () => {
     test('Cenário 5: Deve exibir erro quando o campo Nome estiver vazio no Cadastro', async ({
       registerPage,
     }) => {
@@ -83,7 +83,7 @@ test.describe('Passo 3 - Fluxos de Remoção do Carrinho e Mensagens de Erro', (
       await registerPage.registerUser('', validUser.email, validUser.password);
 
       // 3. Validar mensagem "O campo nome deve ser prenchido"
-      await registerPage.expectRegisterError(errorMessages.register.emptyName);
+      await registerPage.expectRegisterError(scenarioData.register.emptyName);
     });
 
     test('Cenário 6: Deve exibir erro quando o campo E-mail for inválido no Cadastro', async ({
@@ -100,7 +100,7 @@ test.describe('Passo 3 - Fluxos de Remoção do Carrinho e Mensagens de Erro', (
       );
 
       // 3. Validar mensagem "O campo e-mail deve ser prenchido corretamente"
-      await registerPage.expectRegisterError(errorMessages.register.invalidEmail);
+      await registerPage.expectRegisterError(scenarioData.register.invalidEmail);
     });
 
     test('Cenário 7: Deve exibir erro quando a Senha tiver menos de 6 dígitos no Cadastro', async ({
@@ -117,11 +117,11 @@ test.describe('Passo 3 - Fluxos de Remoção do Carrinho e Mensagens de Erro', (
       );
 
       // 3. Validar mensagem "O campo senha deve ter pelo menos 6 dígitos"
-      await registerPage.expectRegisterError(errorMessages.register.shortPassword);
+      await registerPage.expectRegisterError(scenarioData.register.shortPassword);
     });
   });
 
-  test.describe('Parte D: Mensagens de Erro em Produto, Cupom e Checkout', () => {
+  test.describe('Parte D: Mensagens de Erro em Produto, Cupom e Checkout', { tag: ['@negative'] }, () => {
     test('Cenário 8: Deve exibir modal de erro ao aplicar cupom de desconto inválido no Carrinho', async ({
       cartPage,
     }) => {
@@ -131,8 +131,8 @@ test.describe('Passo 3 - Fluxos de Remoção do Carrinho e Mensagens de Erro', (
       // 2. Informar um código de cupom inválido e clicar em "Apply coupon"
       await cartPage.applyCouponAndExpectError(
         invalidCredentials.invalidCoupon,
-        errorMessages.cart.invalidCouponTitle,
-        errorMessages.cart.invalidCouponText
+        scenarioData.cart.invalidCouponTitle,
+        scenarioData.cart.invalidCouponText
       );
     });
 
@@ -145,8 +145,8 @@ test.describe('Passo 3 - Fluxos de Remoção do Carrinho e Mensagens de Erro', (
 
       // 2. Clicar no botão "-" e validar modal "Sorry!" / "Minimun Quantity Reached"
       await productPage.decreaseQuantityBelowMinimumAndExpectWarning(
-        errorMessages.product.minQuantityTitle,
-        errorMessages.product.minQuantityText
+        scenarioData.product.minQuantityTitle,
+        scenarioData.product.minQuantityText
       );
     });
 
@@ -158,12 +158,12 @@ test.describe('Passo 3 - Fluxos de Remoção do Carrinho e Mensagens de Erro', (
 
       // 2. Tentar finalizar pedido (Place Order) sem salvar dados de cobrança e validar erro "Preencha os dados de pagamento!"
       await checkoutPage.clickPlaceOrderWithoutBillingAndExpectError(
-        errorMessages.checkout.missingBillingBeforeOrder
+        scenarioData.checkout.missingBillingBeforeOrder
       );
 
       // 3. Clicar em "Save" com todos os campos de Billings Information vazios e validar os 9 erros obrigatórios
       await checkoutPage.clickSaveEmptyBillingAndExpectErrors(
-        errorMessages.checkout.requiredFields
+        scenarioData.checkout.requiredFields
       );
     });
   });

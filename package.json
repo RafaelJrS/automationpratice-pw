@@ -3,14 +3,19 @@
   "version": "1.0.0",
   "description": "Automação E2E passo a passo do site Automation Practice com Playwright e TypeScript",
   "scripts": {
-    "test": "playwright test",
-    "test:headed": "playwright test --headed",
-    "test:ui": "playwright test --ui",
+    "test": "playwright test tests/e2e",
+    "test:smoke": "playwright test tests/e2e --grep @smoke",
+    "test:regression": "playwright test tests/e2e --grep @regression",
+    "test:negative": "playwright test tests/e2e --grep @negative",
+    "test:headed": "playwright test tests/e2e --headed",
+    "test:ui": "playwright test tests/e2e --ui",
+    "typecheck": "tsc --noEmit",
     "report": "playwright show-report"
   },
   "devDependencies": {
     "@playwright/test": "^1.51.0",
     "@types/node": "^22.0.0",
+    "dotenv": "^18.0.10",
     "typescript": "^5.8.0"
   }
 }

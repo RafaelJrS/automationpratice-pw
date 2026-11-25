@@ -1,5 +1,5 @@
 import { type Locator, type Page, expect } from '@playwright/test';
-import { type BillingDetails } from '../test-data/ecommerce.data';
+import { type BillingDetails } from '../test-data';
 
 export class CheckoutPage {
   readonly page: Page;

@@ -1,4 +1,5 @@
 import { type Locator, type Page, expect } from '@playwright/test';
+import { AlertModal } from '../components/AlertModal';
 
 export class ProductPage {
   readonly page: Page;
@@ -13,9 +14,7 @@ export class ProductPage {
   readonly greenColorRadio: Locator;
   readonly greenColorSwatch: Locator;
   readonly productDetailsTwoTitle: Locator;
-  readonly swalTitle: Locator;
-  readonly swalText: Locator;
-  readonly swalConfirmButton: Locator;
+  readonly alert: AlertModal;
 
   constructor(page: Page) {
     this.page = page;
@@ -30,9 +29,7 @@ export class ProductPage {
     this.greenColorRadio = page.locator('#modal-product-color-green3');
     this.greenColorSwatch = page.locator('label[for="modal-product-color-green3"] span.product-color-green');
     this.productDetailsTwoTitle = page.locator('#product_single_two h3');
-    this.swalTitle = page.locator('#swal2-title');
-    this.swalText = page.locator('#swal2-html-container');
-    this.swalConfirmButton = page.locator('.swal2-confirm');
+    this.alert = new AlertModal(page);
   }
 
   async gotoProduct(productId: number): Promise<void> {
@@ -45,8 +42,8 @@ export class ProductPage {
 
   async addToCartAndExpectSuccess(): Promise<void> {
     await this.addToCartButton.click();
-    await expect(this.swalTitle).toHaveText('Success!');
-    await expect(this.swalText).toContainText('Successfully added to your Cart');
+    await expect(this.alert.title).toHaveText('Success!');
+    await expect(this.alert.text).toContainText('Successfully added to your Cart');
   }
 
   async selectVariationsAndAddToCart(sizeLabel: string): Promise<void> {
@@ -62,27 +59,27 @@ export class ProductPage {
     await this.page.goto(`/product-details-two/${productId}`);
     await expect(this.productDetailsTwoTitle).toHaveText(expectedTitle);
     await this.page.locator('#product_single_two').getByRole('link', { name: 'Add To Cart' }).click();
-    await expect(this.swalTitle).toHaveText('Success!');
-    await expect(this.swalText).toContainText('Successfully added to your Cart');
+    await expect(this.alert.title).toHaveText('Success!');
+    await expect(this.alert.text).toContainText('Successfully added to your Cart');
   }
 
   async addToWishlistAndExpectModal(expectedTitle: string, expectedMessage: string): Promise<void> {
     await this.addToWishlistButton.click();
-    await expect(this.swalTitle).toHaveText(expectedTitle);
-    await expect(this.swalText).toHaveText(expectedMessage);
-    await this.swalConfirmButton.click();
+    await expect(this.alert.title).toHaveText(expectedTitle);
+    await expect(this.alert.text).toHaveText(expectedMessage);
+    await this.alert.confirmButton.click();
   }
 
   async addToCompareAndExpectModal(expectedTitle: string, expectedMessage: string): Promise<void> {
     await this.addToCompareButton.click();
-    await expect(this.swalTitle).toHaveText(expectedTitle);
-    await expect(this.swalText).toContainText(expectedMessage);
+    await expect(this.alert.title).toHaveText(expectedTitle);
+    await expect(this.alert.text).toContainText(expectedMessage);
   }
 
   async decreaseQuantityBelowMinimumAndExpectWarning(title: string, message: string): Promise<void> {
     await this.minusQuantityButton.click();
-    await expect(this.swalTitle).toHaveText(title);
-    await expect(this.swalText).toHaveText(message);
-    await this.swalConfirmButton.click();
+    await expect(this.alert.title).toHaveText(title);
+    await expect(this.alert.text).toHaveText(message);
+    await this.alert.confirmButton.click();
   }
 }

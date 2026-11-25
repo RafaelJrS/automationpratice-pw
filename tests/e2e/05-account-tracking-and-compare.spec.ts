@@ -1,16 +1,16 @@
 // spec: specs/minha-conta-rastreio-e-comparacao.md
 // seed: tests/seed.spec.ts
-import { test } from '../fixtures/pom.fixture';
+import { test } from '../../fixtures/pom.fixture';
 import {
   defaultCompareProducts,
-  errorMessages,
+  scenarioData,
   newCompareProduct,
   sampleProduct,
   validUser,
-} from '../test-data/ecommerce.data';
+} from '../../test-data';
 
-test.describe('Passo 5 - Minha Conta, Rastreio de Pedido e Comparação de Produtos', () => {
-  test.describe('Parte A: Fluxos de Minha Conta (My Account) e Logout', () => {
+test.describe('Passo 5 - Minha Conta, Rastreio de Pedido e Comparação de Produtos', { tag: ['@regression'] }, () => {
+  test.describe('Parte A: Fluxos de Minha Conta (My Account) e Logout', { tag: ['@account'] }, () => {
     test('Cenário 1: Deve navegar pelas abas de Minha Conta (Orders, Downloads, Addresses e Account Details)', async ({
       loginPage,
       myAccountPage,
@@ -38,13 +38,13 @@ test.describe('Passo 5 - Minha Conta, Rastreio de Pedido e Comparação de Produ
 
       // 2. Clicar em logout no menu lateral e validar modal "Logout Sucessfull" / "Thank You" e retorno para /login
       await myAccountPage.logoutAndExpectSuccess(
-        errorMessages.myAccount.logoutTitle,
-        errorMessages.myAccount.logoutText
+        scenarioData.myAccount.logoutTitle,
+        scenarioData.myAccount.logoutText
       );
     });
   });
 
-  test.describe('Parte B: Fluxo de Rastreio de Pedido (Order Tracking)', () => {
+  test.describe('Parte B: Fluxo de Rastreio de Pedido (Order Tracking)', { tag: ['@tracking'] }, () => {
     test('Cenário 3: Deve rastrear um pedido informando Order ID e Billing Email com sucesso', async ({
       orderTrackingPage,
     }) => {
@@ -53,14 +53,14 @@ test.describe('Passo 5 - Minha Conta, Rastreio de Pedido e Comparação de Produ
 
       // 2. Preencher Order ID e Billing Email, clicar em Track e validar tela "Your order is completed!"
       await orderTrackingPage.trackOrderAndExpectCompleted(
-        errorMessages.orderTracking.orderId,
-        errorMessages.orderTracking.billingEmail,
-        errorMessages.orderTracking.completedHeading
+        scenarioData.orderTracking.orderId,
+        scenarioData.orderTracking.billingEmail,
+        scenarioData.orderTracking.completedHeading
       );
     });
   });
 
-  test.describe('Parte C: Fluxos de Comparação de Produtos (Compare)', () => {
+  test.describe('Parte C: Fluxos de Comparação de Produtos (Compare)', { tag: ['@compare'] }, () => {
     test('Cenário 4: Deve adicionar um novo produto à lista de Comparação e validar na tabela', async ({
       productPage,
       comparePage,
@@ -71,8 +71,8 @@ test.describe('Passo 5 - Minha Conta, Rastreio de Pedido e Comparação de Produ
 
       // 2. Clicar em "Add To Compare" e validar modal "Success!" / "Successfully added to Compare List"
       await productPage.addToCompareAndExpectModal(
-        errorMessages.compare.addedTitle,
-        errorMessages.compare.addedText
+        scenarioData.compare.addedTitle,
+        scenarioData.compare.addedText
       );
 
       // 3. Navegar para /compare via link SPA do rodapé e validar o produto na tabela
@@ -89,8 +89,8 @@ test.describe('Passo 5 - Minha Conta, Rastreio de Pedido e Comparação de Produ
 
       // 2. Clicar em "Add To Compare" e validar modal "Failed!" / "Already Added in Compare List"
       await productPage.addToCompareAndExpectModal(
-        errorMessages.compare.duplicateTitle,
-        errorMessages.compare.duplicateText
+        scenarioData.compare.duplicateTitle,
+        scenarioData.compare.duplicateText
       );
     });
 
@@ -109,8 +109,8 @@ test.describe('Passo 5 - Minha Conta, Rastreio de Pedido e Comparação de Produ
       // 3. Excluir o produto restante na lixeira e validar mensagem "PRODUCT NOT FOUND" / "Sorry Mate... No Item Found Inside Your Compare List!"
       await comparePage.deleteRemainingCompareProduct();
       await comparePage.expectEmptyCompareMessage(
-        errorMessages.compare.emptyTitle,
-        errorMessages.compare.emptySubtitle
+        scenarioData.compare.emptyTitle,
+        scenarioData.compare.emptySubtitle
       );
     });
   });

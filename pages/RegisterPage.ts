@@ -1,4 +1,5 @@
 import { type Locator, type Page, expect } from '@playwright/test';
+import { AlertModal } from '../components/AlertModal';
 
 export class RegisterPage {
   readonly page: Page;
@@ -7,9 +8,7 @@ export class RegisterPage {
   readonly passwordInput: Locator;
   readonly registerButton: Locator;
   readonly errorLabel: Locator;
-  readonly swalTitle: Locator;
-  readonly swalText: Locator;
-  readonly swalConfirmButton: Locator;
+  readonly alert: AlertModal;
 
   constructor(page: Page) {
     this.page = page;
@@ -18,9 +17,7 @@ export class RegisterPage {
     this.passwordInput = page.locator('#password');
     this.registerButton = page.locator('#btnRegister');
     this.errorLabel = page.locator('#errorMessageFirstName');
-    this.swalTitle = page.locator('#swal2-title');
-    this.swalText = page.locator('#swal2-html-container');
-    this.swalConfirmButton = page.locator('.swal2-confirm');
+    this.alert = new AlertModal(page);
   }
 
   async goto(): Promise<void> {
@@ -35,9 +32,9 @@ export class RegisterPage {
   }
 
   async expectRegisterSuccess(name: string): Promise<void> {
-    await expect(this.swalTitle).toHaveText('Cadastro realizado!');
-    await expect(this.swalText).toHaveText(`Bem-vindo ${name}`);
-    await this.swalConfirmButton.click();
+    await expect(this.alert.title).toHaveText('Cadastro realizado!');
+    await expect(this.alert.text).toHaveText(`Bem-vindo ${name}`);
+    await this.alert.confirmButton.click();
     await expect(this.page).toHaveURL(/\/my-account/);
   }
 

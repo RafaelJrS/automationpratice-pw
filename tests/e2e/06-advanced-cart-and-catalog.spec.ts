@@ -1,14 +1,14 @@
 // spec: specs/carrinho-avancado-catalogo-e-variacoes.md
 // seed: tests/seed.spec.ts
-import { test } from '../fixtures/pom.fixture';
+import { test } from '../../fixtures/pom.fixture';
 import {
   defaultCartProducts,
-  errorMessages,
+  scenarioData,
   sampleProduct,
-} from '../test-data/ecommerce.data';
+} from '../../test-data';
 
-test.describe('Passo 6 - Carrinho Avançado, Catálogo/Variações de Produto e Produto Inexistente', () => {
-  test.describe('Parte A: Carrinho Avançado e Mini-Carrinho Lateral (Offcanvas)', () => {
+test.describe('Passo 6 - Carrinho Avançado, Catálogo e Variações de Produto', { tag: ['@regression'] }, () => {
+  test.describe('Parte A: Carrinho Avançado e Mini-Carrinho Lateral (Offcanvas)', { tag: ['@cart'] }, () => {
     test('Cenário 1: Deve alterar a quantidade de um item no Carrinho e recalcular o Total dinamicamente', async ({
       cartPage,
     }) => {
@@ -19,8 +19,8 @@ test.describe('Passo 6 - Carrinho Avançado, Catálogo/Variações de Produto e 
       // 2. Alterar a quantidade para 3 e validar recálculo do Total da linha para "$156.00"
       await cartPage.updateProductQuantityAndExpectTotal(
         defaultCartProducts.firstItem,
-        errorMessages.advancedCartAndCatalog.fitFlareUpdatedQty,
-        errorMessages.advancedCartAndCatalog.fitFlareUpdatedTotal
+        scenarioData.advancedCartAndCatalog.fitFlareUpdatedQty,
+        scenarioData.advancedCartAndCatalog.fitFlareUpdatedTotal
       );
     });
 
@@ -34,8 +34,8 @@ test.describe('Passo 6 - Carrinho Avançado, Catálogo/Variações de Produto e 
       // 2. Abrir o drawer do mini-carrinho, remover "Fit-Flare Dress", validar Subtotal ($107.00 -> $55.00) e ir para Checkout
       await cartPage.openOffcanvasRemoveItemAndGoToCheckout(
         defaultCartProducts.firstItem,
-        errorMessages.advancedCartAndCatalog.offcanvasInitialSubtotal,
-        errorMessages.advancedCartAndCatalog.offcanvasUpdatedSubtotal
+        scenarioData.advancedCartAndCatalog.offcanvasInitialSubtotal,
+        scenarioData.advancedCartAndCatalog.offcanvasUpdatedSubtotal
       );
     });
 
@@ -48,12 +48,12 @@ test.describe('Passo 6 - Carrinho Avançado, Catálogo/Variações de Produto e 
       // 2. Clicar no botão "+" do produto "Midi Dress" ($14.00) e validar novo Total "$28.00"
       await cartPage.incrementProductInCartTwoAndExpectTotal(
         defaultCartProducts.secondItem,
-        errorMessages.advancedCartAndCatalog.midiDressUpdatedTotal
+        scenarioData.advancedCartAndCatalog.midiDressUpdatedTotal
       );
     });
   });
 
-  test.describe('Parte B: Catálogo da Loja (/shop), Variações de Produto e Produto Inexistente', () => {
+  test.describe('Parte B: Catálogo da Loja (/shop), Variações de Produto e Layout Alternativo', { tag: ['@catalog'] }, () => {
     test('Cenário 4: Deve ordenar produtos no Catálogo (/shop) e adicionar produto ao carrinho direto pela vitrine', async ({
       shopPage,
     }) => {
@@ -62,7 +62,7 @@ test.describe('Passo 6 - Carrinho Avançado, Catálogo/Variações de Produto e 
 
       // 2. Ordenar por "Price: Low to High" e clicar em "Add to cart" no primeiro card da vitrine
       await shopPage.sortProductsAndAddFirstToCart(
-        errorMessages.advancedCartAndCatalog.sortOptionLowToHigh
+        scenarioData.advancedCartAndCatalog.sortOptionLowToHigh
       );
     });
 
@@ -75,7 +75,7 @@ test.describe('Passo 6 - Carrinho Avançado, Catálogo/Variações de Produto e 
 
       // 2. Selecionar tamanho XL, cor Green, incrementar quantidade no "+" para 2 e clicar em Add To Cart
       await productPage.selectVariationsAndAddToCart(
-        errorMessages.advancedCartAndCatalog.sizeOptionXL
+        scenarioData.advancedCartAndCatalog.sizeOptionXL
       );
     });
 

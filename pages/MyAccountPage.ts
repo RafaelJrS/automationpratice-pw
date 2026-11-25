@@ -1,4 +1,5 @@
 import { type Locator, type Page, expect } from '@playwright/test';
+import { AlertModal } from '../components/AlertModal';
 
 export class MyAccountPage {
   readonly page: Page;
@@ -9,9 +10,7 @@ export class MyAccountPage {
   readonly accountDetailsTab: Locator;
   readonly logoutLink: Locator;
   readonly updateAccountLink: Locator;
-  readonly swalTitle: Locator;
-  readonly swalText: Locator;
-  readonly swalConfirmButton: Locator;
+  readonly alert: AlertModal;
 
   constructor(page: Page) {
     this.page = page;
@@ -22,9 +21,7 @@ export class MyAccountPage {
     this.accountDetailsTab = this.dashboardMenu.getByRole('link', { name: 'Account details' });
     this.logoutLink = this.dashboardMenu.getByRole('link', { name: /logout/i });
     this.updateAccountLink = page.getByRole('link', { name: 'Update Account' });
-    this.swalTitle = page.locator('#swal2-title');
-    this.swalText = page.locator('#swal2-html-container');
-    this.swalConfirmButton = page.locator('.swal2-confirm');
+    this.alert = new AlertModal(page);
   }
 
   async navigateToOrdersAndExpectLoaded(): Promise<void> {
@@ -52,9 +49,9 @@ export class MyAccountPage {
 
   async logoutAndExpectSuccess(expectedTitle: string, expectedText: string): Promise<void> {
     await this.logoutLink.click();
-    await expect(this.swalTitle).toHaveText(expectedTitle);
-    await expect(this.swalText).toHaveText(expectedText);
-    await this.swalConfirmButton.click();
+    await expect(this.alert.title).toHaveText(expectedTitle);
+    await expect(this.alert.text).toHaveText(expectedText);
+    await this.alert.confirmButton.click();
     await expect(this.page).toHaveURL(/\/login/);
   }
 }
