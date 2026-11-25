@@ -41,6 +41,9 @@ O objetivo deste repositório é evoluir gradualmente, do básico ao avançado, 
   4. **Adicionar Novo Produto à Comparação (`Compare`)**: Adiciona o produto `V-Neck Dress` à lista de comparação, valida o modal `Success!` (`Successfully added to Compare List`) e verifica sua presença na tabela de `/compare`.
   5. **Bloqueio de Duplicidade na Comparação**: Tenta adicionar um produto que já está na lista de comparação e valida o modal de erro `Failed!` (`Already Added in Compare List`).
   6. **Mover da Comparação para o Carrinho e Esvaziar Comparação**: Move o primeiro item da tabela de comparação para o carrinho (`ADD TO CART`), remove o segundo na lixeira e valida a mensagem `PRODUCT NOT FOUND` (`Sorry Mate... No Item Found Inside Your Compare List!`).
+- **Passo 6 — Esteira de CI/CD com GitHub Actions (`.github/workflows/playwright.yml`)**:
+  - Pipeline configurado conforme os padrões de mercado (Node.js LTS com cache NPM, `npm ci`, provisionamento enxuto com `npx playwright install --with-deps chromium`, controle de concorrência e publicação automática do `playwright-report/` como artefato).
+  - Configurado com gatilho manual (`workflow_dispatch`) para demonstrar a arquitetura de CI/CD sem disparar execuções automáticas desnecessárias a cada `git push`.
 
 ---
 
@@ -149,13 +152,36 @@ A estrutura segue o padrão de camadas para manter o código limpo, reutilizáve
 
 ```text
 📁 automationpratice-pw/
+├── 📁 .github/
+│   └── 📁 workflows/
+│       └── 📄 playwright.yml   # Pipeline CI/CD do GitHub Actions (configurado em modo manual workflow_dispatch)
 ├── 📁 fixtures/
 │   └── 📄 pom.fixture.ts       # Injeção automática dos Page Objects nos testes (test.extend)
 ├── 📁 pages/
-│   └── 📄 HomePage.ts          # Page Object da Home (Locators readonly e ações da página inicial)
+│   ├── 📄 CartPage.ts          # Page Object do Carrinho (/cart)
+│   ├── 📄 CheckoutPage.ts      # Page Object do Checkout e Faturamento (/checkout-one)
+│   ├── 📄 ComparePage.ts       # Page Object de Comparação de Produtos (/compare)
+│   ├── 📄 HomePage.ts          # Page Object da Home, Busca e Newsletter (/)
+│   ├── 📄 LoginPage.ts         # Page Object de Autenticação (/login)
+│   ├── 📄 MyAccountPage.ts     # Page Object do Painel Minha Conta e Logout (/my-account)
+│   ├── 📄 OrderTrackingPage.ts # Page Object de Rastreio de Pedidos (/order-tracking)
+│   ├── 📄 ProductPage.ts       # Page Object de Detalhes do Produto (/product-details-one/:id)
+│   ├── 📄 RegisterPage.ts      # Page Object de Cadastro de Usuário (/register)
+│   └── 📄 WishlistPage.ts      # Page Object da Lista de Desejos / Favoritos (/wishlist)
+├── 📁 specs/
+│   ├── 📄 fluxos-positivos-e2e.md             # Plano de Testes: Passo 2 (Happy Paths E2E)
+│   ├── 📄 fluxos-remocao-e-erros.md           # Plano de Testes: Passo 3 (Remoções e Mensagens de Erro)
+│   ├── 📄 wishlist-e-busca.md                 # Plano de Testes: Passo 4 (Wishlist e Search Modal)
+│   └── 📄 minha-conta-rastreio-e-comparacao.md # Plano de Testes: Passo 5 (My Account, Tracking e Compare)
+├── 📁 test-data/
+│   └── 📄 ecommerce.data.ts    # Massa de dados centralizada e parametrizada
 ├── 📁 tests/
-│   ├── 📄 home.spec.ts         # Cenário de teste: Passo 1 - Acesso inicial ao site
-│   └── 📄 seed.spec.ts         # Arquivo semente para inicialização de sessões/exploração
+│   ├── 📄 home.spec.ts                             # Passo 1: Acesso inicial ao site
+│   ├── 📄 e2e-positive.spec.ts                     # Passo 2: Fluxos positivos de ponta a ponta (E2E)
+│   ├── 📄 e2e-removal-and-errors.spec.ts           # Passo 3: Remoção de itens e validação de erros
+│   ├── 📄 e2e-wishlist-and-search.spec.ts          # Passo 4: Wishlist (Favoritos) e Busca de Produtos
+│   ├── 📄 e2e-account-tracking-and-compare.spec.ts # Passo 5: Minha Conta, Rastreio e Comparação
+│   └── 📄 seed.spec.ts                             # Arquivo semente para inicialização de sessões/exploração
 ├── 📄 .gitignore               # Arquivos ignorados pelo Git (node_modules, relatórios, configs locais)
 ├── 📄 package.json             # Dependências e scripts de execução NPM
 ├── 📄 playwright.config.ts     # Configuração global do Playwright (baseURL, timeouts, browser, traces)
