@@ -90,6 +90,21 @@ export const errorMessages = {
     notFoundTitle: 'PRODUCT NOT FOUND',
     notFoundSubtitle: 'Sorry Mate... No Item Found according to Your query!',
   },
+  accountEditAndContact: {
+    firstName: 'Rafael',
+    lastName: 'Silva',
+    email: 'rafael.qa@qazando.com',
+    currentPass: '123456',
+    newPass: '654321',
+    phone: '11999999999',
+    subject: 'Dúvida sobre Pedido E2E',
+    message: 'Mensagem enviada pelo teste automatizado Playwright.',
+    contactSuccessTitle: 'Thank You',
+    contactSuccessText: 'We Got Your Message',
+    error404Title: '404',
+    error404Subtitle: "We are sorry, the page you've requested is not available",
+    checkoutInvalidEmailError: 'O campo E-mail deve ser prenchido ou é inválido',
+  },
   checkout: {
     missingBillingBeforeOrder: 'Preencha os dados de pagamento!',
     requiredFields: [

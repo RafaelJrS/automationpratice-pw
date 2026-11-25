@@ -41,7 +41,21 @@ O objetivo deste repositório é evoluir gradualmente, do básico ao avançado, 
   4. **Adicionar Novo Produto à Comparação (`Compare`)**: Adiciona o produto `V-Neck Dress` à lista de comparação, valida o modal `Success!` (`Successfully added to Compare List`) e verifica sua presença na tabela de `/compare`.
   5. **Bloqueio de Duplicidade na Comparação**: Tenta adicionar um produto que já está na lista de comparação e valida o modal de erro `Failed!` (`Already Added in Compare List`).
   6. **Mover da Comparação para o Carrinho e Esvaziar Comparação**: Move o primeiro item da tabela de comparação para o carrinho (`ADD TO CART`), remove o segundo na lixeira e valida a mensagem `PRODUCT NOT FOUND` (`Sorry Mate... No Item Found Inside Your Compare List!`).
-- **Passo 6 — Esteira de CI/CD com GitHub Actions (`.github/workflows/playwright.yml`)**:
+- **Passo 6 — Carrinho Avançado, Catálogo/Variações de Produto e Layout Alternativo (`tests/e2e-advanced-cart-and-catalog.spec.ts`)**:
+  1. **Recálculo Matemático Dinâmico no Carrinho (`/cart`)**: Altera a quantidade de um produto para `3` e valida a atualização imediata do Total da linha (`$156.00`).
+  2. **Mini-Carrinho Lateral (Offcanvas Drawer)**: Abre o drawer lateral da sacola, remove um item, valida a atualização do Subtotal (`$107.00` → `$55.00`) e navega para o Checkout.
+  3. **Incremento de Quantidade no Layout Cart View Two (`/cartTwo`)**: Clica no botão `+` na tabela do segundo layout de carrinho e valida o recálculo do Total (`$28.00`).
+  4. **Ordenação do Catálogo (`/shop`) e Adição Direta pela Vitrine**: Ordena os produtos por `Price: Low to High` e adiciona o item ao carrinho diretamente pelo card da vitrine.
+  5. **Seleção de Variações do Produto (`/product-details-one/1`)**: Seleciona Tamanho (`XL`), Cor (`Green`), incrementa quantidade no botão `+` para `2` e adiciona ao carrinho.
+  6. **Layout 2 de Detalhes do Produto (`/product-details-two/1`)**: Valida o carregamento e adição ao carrinho pelo segundo template de página de produto.
+- **Passo 7 — Edição de Conta, Validações Negativas de Checkout/Formulários, Contato e 404 (`tests/e2e-account-edit-contact-and-validations.spec.ts`)**:
+  1. **Atualização Cadastral e Troca de Senha (`/account-edit`)**: Preenche nome, sobrenome, e-mail, senha atual e nova senha e valida o redirecionamento para o perfil atualizado (`/vendor/vendor-profile`).
+  2. **Bloqueio de Submissão Vazia em `/account-edit`**: Valida o bloqueio nativo HTML5 (`:invalid`) ao tentar salvar o perfil em branco.
+  3. **Validação Negativa de E-mail Inválido no Checkout (`/checkout-one`)**: Preenche todos os campos obrigatórios com um e-mail inválido e valida a exibição exclusiva do erro `O campo E-mail deve ser prenchido ou é inválido` e o bloqueio do salvamento.
+  4. **Seleção de Métodos de Pagamento Alternativos no Checkout**: Alterna entre `Mobile Banking` e `Paypal` e conclui o pedido com sucesso (`Order success!`).
+  5. **Fale Conosco (`/contact-two`) — Positivo e Negativo**: Valida o bloqueio de envio vazio e envia uma mensagem completa validando o modal `Thank You` (`We Got Your Message`).
+  6. **Bloqueio de Rastreio Vazio e Página de Erro 404 (`/error`)**: Valida o bloqueio de rastreio sem `Order ID`, acessa `/error`, confere a mensagem `404` (`We are sorry, the page you've requested is not available`) e retorna à Home pelo botão `Back To Home Page`.
+- **Esteira de CI/CD com GitHub Actions (`.github/workflows/playwright.yml`)**:
   - Pipeline configurado conforme os padrões de mercado (Node.js LTS com cache NPM, `npm ci`, provisionamento enxuto com `npx playwright install --with-deps chromium`, controle de concorrência e publicação automática do `playwright-report/` como artefato).
   - Configurado com gatilho manual (`workflow_dispatch`) para demonstrar a arquitetura de CI/CD sem disparar execuções automáticas desnecessárias a cada `git push`.
 
@@ -158,30 +172,38 @@ A estrutura segue o padrão de camadas para manter o código limpo, reutilizáve
 ├── 📁 fixtures/
 │   └── 📄 pom.fixture.ts       # Injeção automática dos Page Objects nos testes (test.extend)
 ├── 📁 pages/
-│   ├── 📄 CartPage.ts          # Page Object do Carrinho (/cart)
-│   ├── 📄 CheckoutPage.ts      # Page Object do Checkout e Faturamento (/checkout-one)
+│   ├── 📄 AccountEditPage.ts   # Page Object de Edição de Conta e Senha (/account-edit)
+│   ├── 📄 CartPage.ts          # Page Object do Carrinho, CartTwo e Offcanvas (/cart, /cartTwo)
+│   ├── 📄 CheckoutPage.ts      # Page Object do Checkout, Faturamento e Pagamentos (/checkout-one)
 │   ├── 📄 ComparePage.ts       # Page Object de Comparação de Produtos (/compare)
+│   ├── 📄 ContactPage.ts       # Page Object de Fale Conosco (/contact-two)
+│   ├── 📄 Error404Page.ts      # Page Object da Página de Erro 404 (/error)
 │   ├── 📄 HomePage.ts          # Page Object da Home, Busca e Newsletter (/)
 │   ├── 📄 LoginPage.ts         # Page Object de Autenticação (/login)
 │   ├── 📄 MyAccountPage.ts     # Page Object do Painel Minha Conta e Logout (/my-account)
 │   ├── 📄 OrderTrackingPage.ts # Page Object de Rastreio de Pedidos (/order-tracking)
-│   ├── 📄 ProductPage.ts       # Page Object de Detalhes do Produto (/product-details-one/:id)
+│   ├── 📄 ProductPage.ts       # Page Object de Detalhes e Variações do Produto (/product-details-one/:id)
 │   ├── 📄 RegisterPage.ts      # Page Object de Cadastro de Usuário (/register)
+│   ├── 📄 ShopPage.ts          # Page Object do Catálogo e Ordenação da Loja (/shop)
 │   └── 📄 WishlistPage.ts      # Page Object da Lista de Desejos / Favoritos (/wishlist)
 ├── 📁 specs/
-│   ├── 📄 fluxos-positivos-e2e.md             # Plano de Testes: Passo 2 (Happy Paths E2E)
-│   ├── 📄 fluxos-remocao-e-erros.md           # Plano de Testes: Passo 3 (Remoções e Mensagens de Erro)
-│   ├── 📄 wishlist-e-busca.md                 # Plano de Testes: Passo 4 (Wishlist e Search Modal)
-│   └── 📄 minha-conta-rastreio-e-comparacao.md # Plano de Testes: Passo 5 (My Account, Tracking e Compare)
+│   ├── 📄 fluxos-positivos-e2e.md                  # Plano de Testes: Passo 2 (Happy Paths E2E)
+│   ├── 📄 fluxos-remocao-e-erros.md                # Plano de Testes: Passo 3 (Remoções e Mensagens de Erro)
+│   ├── 📄 wishlist-e-busca.md                      # Plano de Testes: Passo 4 (Wishlist e Search Modal)
+│   ├── 📄 minha-conta-rastreio-e-comparacao.md      # Plano de Testes: Passo 5 (My Account, Tracking e Compare)
+│   ├── 📄 carrinho-avancado-catalogo-e-variacoes.md # Plano de Testes: Passo 6 (Cálculos, Offcanvas e Catálogo)
+│   └── 📄 edicao-conta-contato-404-e-validacoes.md  # Plano de Testes: Passo 7 (Account Edit, Contact, 404)
 ├── 📁 test-data/
 │   └── 📄 ecommerce.data.ts    # Massa de dados centralizada e parametrizada
 ├── 📁 tests/
-│   ├── 📄 home.spec.ts                             # Passo 1: Acesso inicial ao site
-│   ├── 📄 e2e-positive.spec.ts                     # Passo 2: Fluxos positivos de ponta a ponta (E2E)
-│   ├── 📄 e2e-removal-and-errors.spec.ts           # Passo 3: Remoção de itens e validação de erros
-│   ├── 📄 e2e-wishlist-and-search.spec.ts          # Passo 4: Wishlist (Favoritos) e Busca de Produtos
-│   ├── 📄 e2e-account-tracking-and-compare.spec.ts # Passo 5: Minha Conta, Rastreio e Comparação
-│   └── 📄 seed.spec.ts                             # Arquivo semente para inicialização de sessões/exploração
+│   ├── 📄 home.spec.ts                                      # Passo 1: Acesso inicial ao site
+│   ├── 📄 e2e-positive.spec.ts                              # Passo 2: Fluxos positivos de ponta a ponta (E2E)
+│   ├── 📄 e2e-removal-and-errors.spec.ts                    # Passo 3: Remoção de itens e validação de erros
+│   ├── 📄 e2e-wishlist-and-search.spec.ts                   # Passo 4: Wishlist (Favoritos) e Busca de Produtos
+│   ├── 📄 e2e-account-tracking-and-compare.spec.ts          # Passo 5: Minha Conta, Rastreio e Comparação
+│   ├── 📄 e2e-advanced-cart-and-catalog.spec.ts             # Passo 6: Carrinho Avançado, Catálogo e Variações
+│   ├── 📄 e2e-account-edit-contact-and-validations.spec.ts  # Passo 7: Edição de Conta, Contato, 404 e Validações
+│   └── 📄 seed.spec.ts                                      # Arquivo semente para inicialização de sessões/exploração
 ├── 📄 .gitignore               # Arquivos ignorados pelo Git (node_modules, relatórios, configs locais)
 ├── 📄 package.json             # Dependências e scripts de execução NPM
 ├── 📄 playwright.config.ts     # Configuração global do Playwright (baseURL, timeouts, browser, traces)

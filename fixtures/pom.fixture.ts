@@ -10,6 +10,9 @@ import { MyAccountPage } from '../pages/MyAccountPage';
 import { OrderTrackingPage } from '../pages/OrderTrackingPage';
 import { ComparePage } from '../pages/ComparePage';
 import { ShopPage } from '../pages/ShopPage';
+import { AccountEditPage } from '../pages/AccountEditPage';
+import { ContactPage } from '../pages/ContactPage';
+import { Error404Page } from '../pages/Error404Page';
 
 type PagesFixture = {
   homePage: HomePage;
@@ -23,6 +26,9 @@ type PagesFixture = {
   orderTrackingPage: OrderTrackingPage;
   comparePage: ComparePage;
   shopPage: ShopPage;
+  accountEditPage: AccountEditPage;
+  contactPage: ContactPage;
+  error404Page: Error404Page;
 };
 
 export const test = base.extend<PagesFixture>({
@@ -58,6 +64,15 @@ export const test = base.extend<PagesFixture>({
   },
   shopPage: async ({ page }, use) => {
     await use(new ShopPage(page));
+  },
+  accountEditPage: async ({ page }, use) => {
+    await use(new AccountEditPage(page));
+  },
+  contactPage: async ({ page }, use) => {
+    await use(new ContactPage(page));
+  },
+  error404Page: async ({ page }, use) => {
+    await use(new Error404Page(page));
   },
 });
 

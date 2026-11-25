@@ -30,4 +30,10 @@ export class OrderTrackingPage {
     await expect(this.page).toHaveURL(/\/order-complete/);
     await expect(this.orderCompletedHeading).toHaveText(expectedHeading);
   }
+
+  async submitEmptyTrackingAndExpectBlocked(): Promise<void> {
+    await this.trackButton.click();
+    await expect(this.page.locator('#order_ID:invalid')).toBeVisible();
+    await expect(this.page).toHaveURL(/\/order-tracking/);
+  }
 }

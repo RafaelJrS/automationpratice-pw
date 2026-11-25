@@ -18,6 +18,8 @@ export class CheckoutPage {
   readonly orderSuccessHeading: Locator;
   readonly orderSuccessSubheading: Locator;
   readonly errorLabels: Locator;
+  readonly mobileBankingRadio: Locator;
+  readonly paypalRadio: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -40,6 +42,8 @@ export class CheckoutPage {
       name: 'Congrats! Your order was created with sucess!',
     });
     this.errorLabels = page.locator('.errorLabel');
+    this.mobileBankingRadio = page.locator('#javascript');
+    this.paypalRadio = page.locator('#css');
   }
 
   async goto(): Promise<void> {
@@ -79,5 +83,18 @@ export class CheckoutPage {
     for (const msg of expectedMessages) {
       await expect(this.page.getByText(msg)).toBeVisible();
     }
+  }
+
+  async expectInvalidEmailErrorOnly(expectedError: string): Promise<void> {
+    await expect(this.page.getByText(expectedError)).toBeVisible();
+    await expect(this.billingSuccessMessage).toHaveCount(0);
+  }
+
+  async selectAlternativePaymentMethodsAndPlaceOrder(): Promise<void> {
+    await this.mobileBankingRadio.check();
+    await expect(this.mobileBankingRadio).toBeChecked();
+    await this.paypalRadio.check();
+    await expect(this.paypalRadio).toBeChecked();
+    await this.placeOrderAndExpectSuccess();
   }
 }
