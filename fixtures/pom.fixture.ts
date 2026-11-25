@@ -9,6 +9,7 @@ import { WishlistPage } from '../pages/WishlistPage';
 import { MyAccountPage } from '../pages/MyAccountPage';
 import { OrderTrackingPage } from '../pages/OrderTrackingPage';
 import { ComparePage } from '../pages/ComparePage';
+import { ShopPage } from '../pages/ShopPage';
 
 type PagesFixture = {
   homePage: HomePage;
@@ -21,6 +22,7 @@ type PagesFixture = {
   myAccountPage: MyAccountPage;
   orderTrackingPage: OrderTrackingPage;
   comparePage: ComparePage;
+  shopPage: ShopPage;
 };
 
 export const test = base.extend<PagesFixture>({
@@ -53,6 +55,9 @@ export const test = base.extend<PagesFixture>({
   },
   comparePage: async ({ page }, use) => {
     await use(new ComparePage(page));
+  },
+  shopPage: async ({ page }, use) => {
+    await use(new ShopPage(page));
   },
 });
 

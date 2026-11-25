@@ -78,6 +78,18 @@ export const errorMessages = {
     emptyTitle: 'PRODUCT NOT FOUND',
     emptySubtitle: 'Sorry Mate... No Item Found Inside Your Compare List!',
   },
+  advancedCartAndCatalog: {
+    fitFlareUpdatedQty: '3',
+    fitFlareUpdatedTotal: '$156.00',
+    offcanvasInitialSubtotal: '$107.00',
+    offcanvasUpdatedSubtotal: '$55.00',
+    midiDressUpdatedTotal: '$28.00',
+    sortOptionLowToHigh: 'Price: Low to High',
+    sizeOptionXL: 'XL',
+    nonExistentProductId: 99999,
+    notFoundTitle: 'PRODUCT NOT FOUND',
+    notFoundSubtitle: 'Sorry Mate... No Item Found according to Your query!',
+  },
   checkout: {
     missingBillingBeforeOrder: 'Preencha os dados de pagamento!',
     requiredFields: [
