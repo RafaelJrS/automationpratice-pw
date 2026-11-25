@@ -52,13 +52,16 @@ jobs:
       - name: 4. Provisionar Navegador Playwright (Chromium Enxuto)
         run: npx playwright install --with-deps chromium
 
-      - name: 5. Validar Tipagem Estática (Typecheck)
+      - name: 5. Validar Lint (ESLint + Playwright Rules)
+        run: npm run lint
+
+      - name: 6. Validar Tipagem Estática (Typecheck)
         run: npm run typecheck
 
-      - name: 6. Executar Suíte Completa de Testes E2E Playwright
+      - name: 7. Executar Suíte Completa de Testes E2E Playwright
         run: npm test
 
-      - name: 7. Publicar Relatório HTML e Traces (Artefato de Qualidade)
+      - name: 8. Publicar Relatório HTML e Traces (Artefato de Qualidade)
         uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
         with:

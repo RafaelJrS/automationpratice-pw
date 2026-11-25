@@ -1,4 +1,5 @@
 import { type Locator, type Page, expect } from '@playwright/test';
+import { FooterComponent } from '../components/FooterComponent';
 
 export class ComparePage {
   readonly page: Page;
@@ -7,6 +8,7 @@ export class ComparePage {
   readonly deleteButtons: Locator;
   readonly emptyCompareHeading: Locator;
   readonly emptyCompareSubheading: Locator;
+  readonly footer: FooterComponent;
 
   constructor(page: Page) {
     this.page = page;
@@ -15,11 +17,11 @@ export class ComparePage {
     this.deleteButtons = page.locator('#compare_area td.pro-remove button');
     this.emptyCompareHeading = page.locator('#empty_cart_area h2');
     this.emptyCompareSubheading = page.locator('#empty_cart_area h3');
+    this.footer = new FooterComponent(page);
   }
 
   async goto(): Promise<void> {
-    await this.page.locator('footer').getByRole('link', { name: 'Compare' }).click();
-    await expect(this.page).toHaveURL(/\/compare/);
+    await this.footer.goToCompare();
   }
 
   async gotoDirect(): Promise<void> {

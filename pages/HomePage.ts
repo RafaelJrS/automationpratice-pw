@@ -1,27 +1,20 @@
 import { type Locator, type Page, expect } from '@playwright/test';
-import { AlertModal } from '../components/AlertModal';
+import { HeaderComponent } from '../components/HeaderComponent';
+import { FooterComponent } from '../components/FooterComponent';
 
 export class HomePage {
   readonly page: Page;
   readonly loginLink: Locator;
   readonly registerLink: Locator;
-  readonly newsletterInput: Locator;
-  readonly newsletterSubmitButton: Locator;
-  readonly searchOpenIcon: Locator;
-  readonly searchInput: Locator;
-  readonly searchSubmitButton: Locator;
-  readonly alert: AlertModal;
+  readonly header: HeaderComponent;
+  readonly footer: FooterComponent;
 
   constructor(page: Page) {
     this.page = page;
     this.loginLink = page.getByRole('link', { name: /login/i });
     this.registerLink = page.getByRole('link', { name: /cadastro/i });
-    this.newsletterInput = page.getByPlaceholder('Your Mail');
-    this.newsletterSubmitButton = page.getByRole('button', { name: 'Send Mail' });
-    this.searchOpenIcon = page.locator('a.search_width').first();
-    this.searchInput = page.getByPlaceholder('type keyword(s) here');
-    this.searchSubmitButton = page.getByRole('button', { name: 'Search' });
-    this.alert = new AlertModal(page);
+    this.header = new HeaderComponent(page);
+    this.footer = new FooterComponent(page);
   }
 
   async goto(): Promise<void> {
@@ -44,14 +37,11 @@ export class HomePage {
   }
 
   async subscribeNewsletter(email: string): Promise<void> {
-    await this.newsletterInput.fill(email);
-    await this.newsletterSubmitButton.click();
+    await this.footer.subscribeNewsletter(email);
   }
 
   async expectNewsletterSuccess(): Promise<void> {
-    await expect(this.alert.title).toHaveText('Success');
-    await expect(this.alert.text).toContainText('Thank you for your Subscribtion');
-    await this.alert.confirmButton.click();
+    await this.footer.expectNewsletterSuccess();
   }
 
   async searchProductAndExpectSuccess(
@@ -59,12 +49,6 @@ export class HomePage {
     expectedTitle: string,
     expectedText: string
   ): Promise<void> {
-    await this.searchOpenIcon.click();
-    await this.searchInput.fill(keyword);
-    await this.searchSubmitButton.click();
-    await expect(this.alert.title).toHaveText(expectedTitle);
-    await expect(this.alert.text).toHaveText(expectedText);
-    await this.alert.confirmButton.click();
-    await expect(this.page).toHaveURL(/\/shop/);
+    await this.header.searchProductAndExpectSuccess(keyword, expectedTitle, expectedText);
   }
 }

@@ -1,5 +1,7 @@
 import { type Locator, type Page, expect } from '@playwright/test';
 import { AlertModal } from '../components/AlertModal';
+import { HeaderComponent } from '../components/HeaderComponent';
+import { FooterComponent } from '../components/FooterComponent';
 
 export class CartPage {
   readonly page: Page;
@@ -11,11 +13,9 @@ export class CartPage {
   readonly emptyCartSubheading: Locator;
   readonly couponInput: Locator;
   readonly applyCouponButton: Locator;
-  readonly offcanvasCartTrigger: Locator;
-  readonly offcanvasCartDrawer: Locator;
-  readonly offcanvasSubtotalValue: Locator;
-  readonly offcanvasCheckoutLink: Locator;
   readonly alert: AlertModal;
+  readonly header: HeaderComponent;
+  readonly footer: FooterComponent;
 
   constructor(page: Page) {
     this.page = page;
@@ -27,16 +27,13 @@ export class CartPage {
     this.emptyCartSubheading = page.locator('#empty_cart_area h3');
     this.couponInput = page.getByPlaceholder('Coupon code');
     this.applyCouponButton = page.getByRole('button', { name: 'Apply coupon' });
-    this.offcanvasCartTrigger = page.locator('header .fa-shopping-bag').first();
-    this.offcanvasCartDrawer = page.locator('#offcanvas-add-cart');
-    this.offcanvasSubtotalValue = this.offcanvasCartDrawer.locator('.offcanvas-cart-total-price-value');
-    this.offcanvasCheckoutLink = this.offcanvasCartDrawer.getByRole('link', { name: 'Checkout' });
     this.alert = new AlertModal(page);
+    this.header = new HeaderComponent(page);
+    this.footer = new FooterComponent(page);
   }
 
   async goto(): Promise<void> {
-    await this.page.locator('footer').getByRole('link', { name: 'Cart View One' }).click();
-    await expect(this.page).toHaveURL(/\/cart/);
+    await this.footer.goToCart();
   }
 
   async gotoDirect(): Promise<void> {
@@ -76,15 +73,11 @@ export class CartPage {
     initialSubtotal: string,
     updatedSubtotal: string
   ): Promise<void> {
-    await this.offcanvasCartTrigger.click();
-    await expect(this.offcanvasSubtotalValue).toHaveText(initialSubtotal);
-    const item = this.offcanvasCartDrawer.locator('li.offcanvas-wishlist-item-single', {
-      hasText: productName,
-    });
-    await item.locator('a.offcanvas-wishlist-item-delete').click();
-    await expect(this.offcanvasSubtotalValue).toHaveText(updatedSubtotal);
-    await this.offcanvasCheckoutLink.click();
-    await expect(this.page).toHaveURL(/\/checkout-one/);
+    await this.header.openOffcanvasRemoveItemAndGoToCheckout(
+      productName,
+      initialSubtotal,
+      updatedSubtotal
+    );
   }
 
   async removeProductFromCart(productName: string): Promise<void> {

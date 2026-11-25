@@ -56,7 +56,7 @@ O objetivo deste repositório é evoluir gradualmente, do básico ao avançado, 
   5. **Fale Conosco (`/contact-two`) — Positivo e Negativo**: Valida o bloqueio de envio vazio e envia uma mensagem completa validando o modal `Thank You` (`We Got Your Message`).
   6. **Bloqueio de Rastreio Vazio e Página de Erro 404 (`/error`)**: Valida o bloqueio de rastreio sem `Order ID`, acessa `/error`, confere a mensagem `404` (`We are sorry, the page you've requested is not available`) e retorna à Home pelo botão `Back To Home Page`.
 - **Esteira de CI/CD com GitHub Actions (`.github/workflows/playwright.yml`)**:
-  - Pipeline configurado conforme os padrões de mercado (Node.js LTS com cache NPM, `npm ci`, provisionamento enxuto com `npx playwright install --with-deps chromium`, validação de tipagem `npm run typecheck`, controle de concorrência e publicação automática do `playwright-report/` como artefato).
+  - Pipeline configurado conforme os padrões de mercado (Node.js LTS com cache NPM, `npm ci`, provisionamento enxuto com `npx playwright install --with-deps chromium`, validação de lint `npm run lint` e tipagem `npm run typecheck`, controle de concorrência e publicação automática do `playwright-report/` como artefato).
   - Configurado com gatilho manual (`workflow_dispatch`) para demonstrar a arquitetura de CI/CD sem disparar execuções automáticas desnecessárias a cada `git push`.
 
 ---
@@ -68,6 +68,7 @@ O objetivo deste repositório é evoluir gradualmente, do básico ao avançado, 
 | **Node.js** | LTS (v18+ ou v20+ recomendado) | Ambiente de execução JavaScript/TypeScript |
 | **TypeScript** | `^5.8.0` | Linguagem principal com tipagem estática e segura |
 | **Playwright Test** | `@playwright/test ^1.51.0` | Framework de automação web E2E, runner e asserções |
+| **ESLint + Playwright Plugin** | `eslint ^10.2.1` / `eslint-plugin-playwright ^2.10.2` | Análise estática e bloqueio de anti-patterns Playwright |
 | **Dotenv** | `^18.0.10` | Carregamento de variáveis de ambiente via `.env` |
 | **NPM** | Nativo do Node.js | Gerenciador de pacotes e scripts do projeto |
 
@@ -139,13 +140,16 @@ npm test
 ```
 *(Equivalente a `npx playwright test tests/e2e`)*
 
-### 2️⃣ Executar por Tags (`@smoke`, `@regression`, `@negative`)
-Permite rodar apenas testes críticos de fumaça, toda a regressão ou apenas cenários negativos:
+### 2️⃣ Executar por Tags, Mobile e Cross-Browser
+Permite rodar apenas testes críticos de fumaça, toda a regressão, cenários negativos, viewport mobile (`Pixel 7`) ou múltiplos navegadores (`Chromium`, `Firefox` e `WebKit`):
 ```bash
 npm run test:smoke
 npm run test:regression
 npm run test:negative
+npm run test:mobile
+npm run test:cross-browser
 ```
+*(Para rodar `test:cross-browser` localmente, instale todos os navegadores antes com `npx playwright install`.)*
 
 ### 3️⃣ Executar os testes vendo o navegador abrir (Modo Headed)
 Ideal para acompanhar visualmente cada clique e navegação do Playwright na tela:
@@ -161,12 +165,13 @@ npm run test:ui
 ```
 *(Equivalente a `npx playwright test tests/e2e --ui`)*
 
-### 5️⃣ Validar Tipagem Estática do TypeScript (`typecheck`)
-Verifica erros de tipo em todos os arquivos sem emitir JavaScript:
+### 5️⃣ Validar Lint (`ESLint`) e Tipagem Estática (`TypeScript`)
+Garante zero anti-patterns do Playwright (`waitForTimeout`, `networkidle`, `test.only`) e zero erros de tipo:
 ```bash
+npm run lint
 npm run typecheck
 ```
-*(Equivalente a `tsc --noEmit`)*
+*(Equivalente a `eslint .` e `tsc --noEmit`)*
 
 ### 6️⃣ Executar apenas um arquivo de teste específico
 Para rodar somente o teste inicial da Home:
@@ -193,12 +198,14 @@ A estrutura segue o padrão de camadas para manter o código limpo, reutilizáve
 │   └── 📁 workflows/
 │       └── 📄 playwright.yml   # Pipeline CI/CD do GitHub Actions (configurado em modo manual workflow_dispatch)
 ├── 📁 components/
-│   └── 📄 AlertModal.ts        # Component Object compartilhado para modais SweetAlert2 (#swal2-*)
+│   ├── 📄 AlertModal.ts        # Component Object compartilhado para modais SweetAlert2 (#swal2-*)
+│   ├── 📄 FooterComponent.ts   # Component Object de navegação SPA do rodapé e Newsletter
+│   └── 📄 HeaderComponent.ts   # Component Object do cabeçalho (Search Modal e Mini-Carrinho Offcanvas)
 ├── 📁 fixtures/
 │   └── 📄 pom.fixture.ts       # Injeção automática dos Page Objects nos testes (test.extend)
 ├── 📁 pages/
 │   ├── 📄 AccountEditPage.ts   # Page Object de Edição de Conta e Senha (/account-edit)
-│   ├── 📄 CartPage.ts          # Page Object do Carrinho, CartTwo e Offcanvas (/cart, /cartTwo)
+│   ├── 📄 CartPage.ts          # Page Object do Carrinho e CartTwo (/cart, /cartTwo)
 │   ├── 📄 CheckoutPage.ts      # Page Object do Checkout, Faturamento e Pagamentos (/checkout-one)
 │   ├── 📄 ComparePage.ts       # Page Object de Comparação de Produtos (/compare)
 │   ├── 📄 ContactPage.ts       # Page Object de Fale Conosco (/contact-two)
@@ -237,8 +244,9 @@ A estrutura segue o padrão de camadas para manter o código limpo, reutilizáve
 │   └── 📄 seed.spec.ts                                      # Arquivo semente para inicialização de sessões/exploração
 ├── 📄 .env.example             # Modelo de variáveis de ambiente para execução local
 ├── 📄 .gitignore               # Arquivos ignorados pelo Git (node_modules, .env, relatórios, configs locais)
+├── 📄 eslint.config.mjs        # Regras de lint ESLint + eslint-plugin-playwright
 ├── 📄 package.json             # Dependências e scripts de execução NPM
-├── 📄 playwright.config.ts     # Configuração global do Playwright (dotenv, baseURL, traces, vídeos em falha)
+├── 📄 playwright.config.ts     # Configuração global do Playwright (cross-browser, mobile, dotenv, traces)
 ├── 📄 tsconfig.json            # Configurações do compilador TypeScript (strict + noEmit)
 └── 📄 README.md                # Documentação passo a passo do projeto
 ```
@@ -247,9 +255,10 @@ A estrutura segue o padrão de camadas para manter o código limpo, reutilizáve
 
 ## 💡 7. Boas Práticas Adotadas (Padrão de Mercado)
 
-- **Page Object Model (POM) + Component Objects (`components/`)**: Nenhum seletor fica solto dentro dos arquivos `.spec.ts`. Elementos transversais compartilhados (como os modais SweetAlert2 em `AlertModal.ts`) ficam isolados em `components/` para evitar duplicação.
+- **Page Object Model (POM) + Component Objects (`components/`) com SRP**: Nenhum seletor fica solto dentro dos arquivos `.spec.ts`. Elementos transversais compartilhados (`AlertModal.ts`, `HeaderComponent.ts`, `FooterComponent.ts`) ficam isolados em `components/` respeitando o Princípio da Responsabilidade Única.
 - **Custom Fixtures (`pom.fixture.ts`)**: Em vez de instanciar páginas manualmente em todo teste, injetamos os Page Objects diretamente via `test.extend`.
+- **Observabilidade de Negócio com `test.step`**: Fluxos longos E2E são estruturados em etapas de negócio explícitas no `playwright-report` e no Trace Viewer.
 - **Massa de Dados Modular + `.env.example`**: Dados e contratos tipados separados por domínio em `test-data/` com suporte a variáveis de ambiente carregadas via `dotenv`.
-- **Tags de Execução (`@smoke`, `@regression`, `@negative`)**: Suíte organizada em `tests/e2e/` com tags nativas do Playwright para permitir execuções direcionadas em CI/CD ou localmente.
-- **Tipagem Estrita & Typecheck (`tsc --noEmit`)**: Validação estática de tipos integrada aos scripts e ao workflow do GitHub Actions.
+- **Tags e Cross-Browser / Mobile**: Suíte organizada em `tests/e2e/` com tags nativas (`@smoke`, `@regression`, `@negative`) e projetos configurados para `chromium`, `firefox`, `webkit` e `mobile-chrome` (`Pixel 7`).
+- **Lint Playwright + Typecheck (`eslint .` & `tsc --noEmit`)**: Bloqueio automatizado de anti-patterns (`waitForTimeout`, `networkidle`, `test.only`) e validação estrita de tipos antes da execução.
 - **Locadores Semânticos & Zero `waitForTimeout`**: Priorização de locadores acessíveis (`getByRole`, `getByPlaceholder`), *Auto-Wait* nativo e *Web-First Assertions*.

@@ -1,5 +1,6 @@
 import { type Locator, type Page, expect } from '@playwright/test';
 import { AlertModal } from '../components/AlertModal';
+import { FooterComponent } from '../components/FooterComponent';
 
 export class WishlistPage {
   readonly page: Page;
@@ -7,6 +8,7 @@ export class WishlistPage {
   readonly emptyWishlistHeading: Locator;
   readonly trashIcons: Locator;
   readonly alert: AlertModal;
+  readonly footer: FooterComponent;
 
   constructor(page: Page) {
     this.page = page;
@@ -14,11 +16,11 @@ export class WishlistPage {
     this.emptyWishlistHeading = page.locator('#empty_cart_area h2');
     this.trashIcons = page.locator('#Wishlist_area tbody tr .product_remove i.fa-trash');
     this.alert = new AlertModal(page);
+    this.footer = new FooterComponent(page);
   }
 
   async goto(): Promise<void> {
-    await this.page.locator('footer').getByRole('link', { name: 'Wishlist' }).click();
-    await expect(this.page).toHaveURL(/\/wishlist/);
+    await this.footer.goToWishlist();
   }
 
   async gotoDirect(): Promise<void> {

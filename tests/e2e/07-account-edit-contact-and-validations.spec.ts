@@ -12,10 +12,7 @@ test.describe('Passo 7 - Edição de Conta, Validações Negativas de Checkout/F
     test('Cenário 1: Deve atualizar informações cadastrais e senha em /account-edit com sucesso', async ({
       accountEditPage,
     }) => {
-      // 1. Acessar a página de edição de conta (/account-edit)
       await accountEditPage.goto();
-
-      // 2. Preencher nome, sobrenome, e-mail, senha atual e nova senha e submeter
       await accountEditPage.fillAndUpdateAccount(
         scenarioData.accountEditAndContact.firstName,
         scenarioData.accountEditAndContact.lastName,
@@ -28,10 +25,7 @@ test.describe('Passo 7 - Edição de Conta, Validações Negativas de Checkout/F
     test('Cenário 2: Deve bloquear submissão de /account-edit quando os campos obrigatórios estiverem vazios', async ({
       accountEditPage,
     }) => {
-      // 1. Acessar a página de edição de conta (/account-edit)
       await accountEditPage.goto();
-
-      // 2. Clicar em Update Information sem preencher os campos e validar bloqueio HTML5 (:invalid)
       await accountEditPage.submitEmptyAndExpectBlocked();
     });
   });
@@ -40,16 +34,11 @@ test.describe('Passo 7 - Edição de Conta, Validações Negativas de Checkout/F
     test('Cenário 3: Deve exibir erro específico de e-mail inválido no Checkout mesmo com demais campos preenchidos', async ({
       checkoutPage,
     }) => {
-      // 1. Acessar a página de Checkout (/checkout-one)
       await checkoutPage.goto();
-
-      // 2. Preencher todos os campos obrigatórios com um e-mail inválido e clicar em Save
       await checkoutPage.fillAndSaveBillingInformation({
         ...validBilling,
         email: invalidCredentials.invalidEmail,
       });
-
-      // 3. Validar erro "O campo E-mail deve ser prenchido ou é inválido" e bloqueio do salvamento
       await checkoutPage.expectInvalidEmailErrorOnly(
         scenarioData.accountEditAndContact.checkoutInvalidEmailError
       );
@@ -58,13 +47,15 @@ test.describe('Passo 7 - Edição de Conta, Validações Negativas de Checkout/F
     test('Cenário 4: Deve selecionar métodos de pagamento alternativos (Mobile Banking e Paypal) e concluir pedido', async ({
       checkoutPage,
     }) => {
-      // 1. Acessar o Checkout e salvar os dados válidos de Billings Information
-      await checkoutPage.goto();
-      await checkoutPage.fillAndSaveBillingInformation(validBilling);
-      await checkoutPage.expectBillingSavedSuccess();
+      await test.step('Acessar Checkout e salvar Billings Information válido', async () => {
+        await checkoutPage.goto();
+        await checkoutPage.fillAndSaveBillingInformation(validBilling);
+        await checkoutPage.expectBillingSavedSuccess();
+      });
 
-      // 2. Alternar entre os métodos Mobile Banking e Paypal e finalizar o pedido com sucesso
-      await checkoutPage.selectAlternativePaymentMethodsAndPlaceOrder();
+      await test.step('Alternar métodos de pagamento e concluir pedido', async () => {
+        await checkoutPage.selectAlternativePaymentMethodsAndPlaceOrder();
+      });
     });
   });
 
@@ -72,38 +63,40 @@ test.describe('Passo 7 - Edição de Conta, Validações Negativas de Checkout/F
     test('Cenário 5: Deve bloquear envio vazio e enviar mensagem de contato com sucesso em Contact Us (/contact-two)', async ({
       contactPage,
     }) => {
-      // 1. Acessar a página Fale Conosco (/contact-two)
-      await contactPage.goto();
+      await test.step('Acessar Contact Us e validar bloqueio de envio vazio', async () => {
+        await contactPage.goto();
+        await contactPage.submitEmptyAndExpectBlocked();
+      });
 
-      // 2. Tentar enviar formulário vazio e validar bloqueio HTML5 (:invalid)
-      await contactPage.submitEmptyAndExpectBlocked();
-
-      // 3. Preencher todos os dados de contato, enviar e validar modal "Thank You" / "We Got Your Message"
-      await contactPage.fillAndSubmitContactForm(
-        scenarioData.accountEditAndContact.firstName,
-        scenarioData.accountEditAndContact.email,
-        scenarioData.accountEditAndContact.phone,
-        scenarioData.accountEditAndContact.subject,
-        scenarioData.accountEditAndContact.message,
-        scenarioData.accountEditAndContact.contactSuccessTitle,
-        scenarioData.accountEditAndContact.contactSuccessText
-      );
+      await test.step('Preencher formulário de contato e validar modal "Thank You"', async () => {
+        await contactPage.fillAndSubmitContactForm(
+          scenarioData.accountEditAndContact.firstName,
+          scenarioData.accountEditAndContact.email,
+          scenarioData.accountEditAndContact.phone,
+          scenarioData.accountEditAndContact.subject,
+          scenarioData.accountEditAndContact.message,
+          scenarioData.accountEditAndContact.contactSuccessTitle,
+          scenarioData.accountEditAndContact.contactSuccessText
+        );
+      });
     });
 
     test('Cenário 6: Deve bloquear rastreio de pedido vazio e validar Página 404 (/error) com retorno à Home', async ({
       orderTrackingPage,
       error404Page,
     }) => {
-      // 1. Acessar /order-tracking e tentar rastrear com campos vazios validando bloqueio
-      await orderTrackingPage.goto();
-      await orderTrackingPage.submitEmptyTrackingAndExpectBlocked();
+      await test.step('Validar bloqueio de rastreio vazio em /order-tracking', async () => {
+        await orderTrackingPage.goto();
+        await orderTrackingPage.submitEmptyTrackingAndExpectBlocked();
+      });
 
-      // 2. Acessar a página 404 (/error), validar mensagens e clicar em "Back To Home Page"
-      await error404Page.goto();
-      await error404Page.expect404PageAndReturnHome(
-        scenarioData.accountEditAndContact.error404Title,
-        scenarioData.accountEditAndContact.error404Subtitle
-      );
+      await test.step('Validar página 404 e retorno à Home', async () => {
+        await error404Page.goto();
+        await error404Page.expect404PageAndReturnHome(
+          scenarioData.accountEditAndContact.error404Title,
+          scenarioData.accountEditAndContact.error404Subtitle
+        );
+      });
     });
   });
 });
