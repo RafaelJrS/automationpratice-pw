@@ -8,7 +8,7 @@ Projeto de automação de testes End-to-End (E2E) construído passo a passo para
 
 O objetivo deste repositório é evoluir gradualmente, do básico ao avançado, na automação do site `https://automationpratice.com.br/`.
 
-### Etapa Atual (Passo 1 & Passo 2 — Base & Fluxos Positivos End-to-End):
+### Etapa Atual (Passos 1, 2 e 3 — Base, Fluxos Positivos E2E, Remoções e Mensagens de Erro):
 - **Passo 1 — Acesso Inicial (`tests/home.spec.ts`)**: Abre o navegador Chromium, acessa a página principal do Automation Practice e valida o carregamento da Home.
 - **Passo 2 — Fluxos Positivos End-to-End (`tests/e2e-positive.spec.ts`)**:
   1. **Cadastro de Novo Usuário**: Navega até `/register`, preenche nome, e-mail e senha válidos e valida o modal `Cadastro realizado!` (`Bem-vindo <Nome>`) e redirecionamento para `/my-account`.
@@ -16,6 +16,17 @@ O objetivo deste repositório é evoluir gradualmente, do básico ao avançado, 
   3. **Adição de Produto ao Carrinho**: Acessa o produto (`Green Dress For Woman`), adiciona ao carrinho validando o modal `Success!` (`Successfully added to your Cart`) e confirma a presença do item na tabela do carrinho (`/cart`).
   4. **Jornada Completa E2E (Login → Produto → Carrinho → Checkout → Pedido Concluído)**: Executa o fluxo de compra completo, preenche todos os dados de cobrança (*Billings Information*), valida a mensagem `Billings Information registred with success!` e finaliza o pedido validando o modal `Order success!` (`Congrats! Your order was created with sucess!`).
   5. **Inscrição na Newsletter**: Preenche o e-mail no rodapé e valida o modal `Success` (`Thank you for your Subscribtion`).
+- **Passo 3 — Fluxos de Remoção do Carrinho e Mensagens de Erro (`tests/e2e-removal-and-errors.spec.ts`)**:
+  1. **Remoção Individual do Carrinho**: Remove um item específico (`Fit-Flare Dress`) da tabela do carrinho clicando no ícone de lixeira e confirma que os demais itens permanecem.
+  2. **Limpeza Completa do Carrinho (`Clear cart`)**: Esvazia todos os itens do carrinho e valida a mensagem `YOUR CART IS EMPTY` (`Sorry Mate... No Item Found Inside Your Cart!`).
+  3. **Erro de E-mail Inválido no Login**: Valida a mensagem `E-mail inválido.`.
+  4. **Erro de Senha Inválida no Login**: Valida a mensagem `Senha inválida.` para senhas com menos de 6 dígitos.
+  5. **Erro de Nome Obrigatório no Cadastro**: Valida a mensagem `O campo nome deve ser prenchido`.
+  6. **Erro de E-mail Inválido no Cadastro**: Valida a mensagem `O campo e-mail deve ser prenchido corretamente`.
+  7. **Erro de Senha Curta no Cadastro**: Valida a mensagem `O campo senha deve ter pelo menos 6 dígitos`.
+  8. **Erro de Cupom Inválido no Carrinho**: Aplica um código de cupom inexistente e valida o modal `Error!!` (`Invalid Cuppon Code`).
+  9. **Alerta de Quantidade Mínima do Produto**: Tenta reduzir a quantidade abaixo de `1` na página do produto e valida o alerta `Sorry!` (`Minimun Quantity Reached`).
+  10. **Erros de Campos Obrigatórios e Bloqueio de Pedido no Checkout**: Valida o bloqueio `Preencha os dados de pagamento!` ao clicar em `Place Order` sem faturamento salvo e valida as 9 mensagens de erro obrigatórias do formulário `Billings Information`.
 
 ---
 

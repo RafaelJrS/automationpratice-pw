@@ -22,6 +22,48 @@ export const validUser: UserCredentials = {
   password: process.env.TEST_USER_PASSWORD || '123456',
 };
 
+export const invalidCredentials = {
+  invalidEmail: 'email_invalido_sem_dominio',
+  shortPassword: '123',
+  invalidCoupon: 'CUPOMINVALIDO10',
+};
+
+export const errorMessages = {
+  login: {
+    invalidEmail: 'E-mail inválido.',
+    invalidPassword: 'Senha inválida.',
+  },
+  register: {
+    emptyName: 'O campo nome deve ser prenchido',
+    invalidEmail: 'O campo e-mail deve ser prenchido corretamente',
+    shortPassword: 'O campo senha deve ter pelo menos 6 dígitos',
+  },
+  cart: {
+    emptyTitle: 'YOUR CART IS EMPTY',
+    emptySubtitle: 'Sorry Mate... No Item Found Inside Your Cart!',
+    invalidCouponTitle: 'Error!!',
+    invalidCouponText: 'Invalid Cuppon Code',
+  },
+  product: {
+    minQuantityTitle: 'Sorry!',
+    minQuantityText: 'Minimun Quantity Reached',
+  },
+  checkout: {
+    missingBillingBeforeOrder: 'Preencha os dados de pagamento!',
+    requiredFields: [
+      'O campo First Name deve ser prenchido',
+      'O campo Last Name deve ser prenchido',
+      'O campo Company deve ser prenchido',
+      'O campo E-mail deve ser prenchido ou é inválido',
+      'O campo Country deve ser prenchido',
+      'O campo City deve ser prenchido',
+      'O campo Zip Code deve ser prenchido',
+      'O campo Address deve ser prenchido',
+      'O campo Additional Notes deve ser prenchido',
+    ],
+  },
+};
+
 export const validBilling: BillingDetails = {
   firstName: 'Rafael',
   lastName: 'Silva',
@@ -37,4 +79,10 @@ export const validBilling: BillingDetails = {
 export const sampleProduct = {
   id: 1,
   name: 'Green Dress For Woman',
+};
+
+export const defaultCartProducts = {
+  firstItem: 'Fit-Flare Dress',
+  secondItem: 'Midi Dress',
+  thirdItem: 'Tulip Dress',
 };

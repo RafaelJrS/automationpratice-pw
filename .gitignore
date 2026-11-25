@@ -20,4 +20,5 @@ context/
 .mcp.json
 .vscode/mcp.json
 .playwright-mcp/
+debug.log
 

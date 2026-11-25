@@ -6,6 +6,7 @@ export class LoginPage {
   readonly passwordInput: Locator;
   readonly loginButton: Locator;
   readonly rememberMeCheckbox: Locator;
+  readonly invalidInputError: Locator;
   readonly swalTitle: Locator;
   readonly swalText: Locator;
   readonly swalConfirmButton: Locator;
@@ -16,6 +17,7 @@ export class LoginPage {
     this.passwordInput = page.locator('#password');
     this.loginButton = page.locator('#btnLogin');
     this.rememberMeCheckbox = page.locator('#materialUnchecked');
+    this.invalidInputError = page.locator('.invalid_input');
     this.swalTitle = page.locator('#swal2-title');
     this.swalText = page.locator('#swal2-html-container');
     this.swalConfirmButton = page.locator('.swal2-confirm');
@@ -36,5 +38,9 @@ export class LoginPage {
     await expect(this.swalText).toHaveText(`Olá, ${email}`);
     await this.swalConfirmButton.click();
     await expect(this.page).toHaveURL(/\/my-account/);
+  }
+
+  async expectLoginError(expectedMessage: string): Promise<void> {
+    await expect(this.invalidInputError).toHaveText(expectedMessage);
   }
 }

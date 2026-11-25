@@ -6,6 +6,7 @@ export class RegisterPage {
   readonly emailInput: Locator;
   readonly passwordInput: Locator;
   readonly registerButton: Locator;
+  readonly errorLabel: Locator;
   readonly swalTitle: Locator;
   readonly swalText: Locator;
   readonly swalConfirmButton: Locator;
@@ -16,6 +17,7 @@ export class RegisterPage {
     this.emailInput = page.locator('#email');
     this.passwordInput = page.locator('#password');
     this.registerButton = page.locator('#btnRegister');
+    this.errorLabel = page.locator('#errorMessageFirstName');
     this.swalTitle = page.locator('#swal2-title');
     this.swalText = page.locator('#swal2-html-container');
     this.swalConfirmButton = page.locator('.swal2-confirm');
@@ -37,5 +39,9 @@ export class RegisterPage {
     await expect(this.swalText).toHaveText(`Bem-vindo ${name}`);
     await this.swalConfirmButton.click();
     await expect(this.page).toHaveURL(/\/my-account/);
+  }
+
+  async expectRegisterError(expectedMessage: string): Promise<void> {
+    await expect(this.errorLabel).toHaveText(expectedMessage);
   }
 }

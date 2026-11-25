@@ -17,6 +17,7 @@ export class CheckoutPage {
   readonly placeOrderButton: Locator;
   readonly orderSuccessHeading: Locator;
   readonly orderSuccessSubheading: Locator;
+  readonly errorLabels: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -38,6 +39,7 @@ export class CheckoutPage {
     this.orderSuccessSubheading = page.getByRole('heading', {
       name: 'Congrats! Your order was created with sucess!',
     });
+    this.errorLabels = page.locator('.errorLabel');
   }
 
   async goto(): Promise<void> {
@@ -65,5 +67,17 @@ export class CheckoutPage {
     await this.placeOrderButton.click();
     await expect(this.orderSuccessHeading).toBeVisible();
     await expect(this.orderSuccessSubheading).toBeVisible();
+  }
+
+  async clickPlaceOrderWithoutBillingAndExpectError(expectedMessage: string): Promise<void> {
+    await this.placeOrderButton.click();
+    await expect(this.page.getByText(expectedMessage)).toBeVisible();
+  }
+
+  async clickSaveEmptyBillingAndExpectErrors(expectedMessages: string[]): Promise<void> {
+    await this.saveBillingButton.click();
+    for (const msg of expectedMessages) {
+      await expect(this.page.getByText(msg)).toBeVisible();
+    }
   }
 }
