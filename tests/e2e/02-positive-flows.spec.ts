@@ -1,24 +1,31 @@
 // spec: specs/fluxos-positivos-e2e.md
 // seed: tests/seed.spec.ts
 import { test } from '../../fixtures/pom.fixture';
-import { sampleProduct, validBilling, validUser } from '../../test-data';
+import {
+  createRandomBilling,
+  createRandomUser,
+  sampleProduct,
+  validUser,
+} from '../../test-data';
 
 test.describe('Passo 2 - Fluxos Positivos End-to-End (E-commerce Automation Practice)', { tag: ['@regression', '@positive'] }, () => {
   test('Cenário 1: Deve realizar cadastro de novo usuário com sucesso', async ({
     homePage,
     registerPage,
   }) => {
+    const dynamicUser = createRandomUser();
+
     await test.step('Acessar a página inicial e navegar para Cadastro', async () => {
       await homePage.goto();
       await homePage.goToRegister();
     });
 
-    await test.step('Preencher dados válidos e submeter formulário de cadastro', async () => {
-      await registerPage.registerUser(validUser.name, validUser.email, validUser.password);
+    await test.step('Preencher dados válidos dinâmicos (Faker) e submeter cadastro', async () => {
+      await registerPage.registerUser(dynamicUser.name, dynamicUser.email, dynamicUser.password);
     });
 
     await test.step('Validar modal "Cadastro realizado!" e redirecionamento para /my-account', async () => {
-      await registerPage.expectRegisterSuccess(validUser.name);
+      await registerPage.expectRegisterSuccess(dynamicUser.name);
     });
   });
 
@@ -65,6 +72,8 @@ test.describe('Passo 2 - Fluxos Positivos End-to-End (E-commerce Automation Prac
     cartPage,
     checkoutPage,
   }) => {
+    const dynamicBilling = createRandomBilling();
+
     await test.step('1. Autenticar usuário no sistema', async () => {
       await loginPage.goto();
       await loginPage.login(validUser.email, validUser.password);
@@ -83,8 +92,8 @@ test.describe('Passo 2 - Fluxos Positivos End-to-End (E-commerce Automation Prac
       await cartPage.proceedToCheckout();
     });
 
-    await test.step('4. Preencher e salvar Billings Information', async () => {
-      await checkoutPage.fillAndSaveBillingInformation(validBilling);
+    await test.step('4. Preencher e salvar Billings Information dinâmico (Faker)', async () => {
+      await checkoutPage.fillAndSaveBillingInformation(dynamicBilling);
       await checkoutPage.expectBillingSavedSuccess();
     });
 

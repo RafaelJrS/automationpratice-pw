@@ -9,6 +9,7 @@
     "test:negative": "playwright test tests/e2e --project=chromium --grep @negative",
     "test:mobile": "playwright test tests/e2e --project=mobile-chrome --grep @smoke",
     "test:cross-browser": "playwright test tests/e2e --project=chromium --project=firefox --project=webkit",
+    "test:a11y": "playwright test tests/a11y --project=chromium",
     "test:headed": "playwright test tests/e2e --project=chromium --headed",
     "test:ui": "playwright test tests/e2e --project=chromium --ui",
     "lint": "eslint .",
@@ -16,7 +17,9 @@
     "report": "playwright show-report"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.14.1",
     "@eslint/js": "^10.0.1",
+    "@faker-js/faker": "^10.6.0",
     "@playwright/test": "^1.51.0",
     "@types/node": "^22.0.0",
     "dotenv": "^18.0.10",

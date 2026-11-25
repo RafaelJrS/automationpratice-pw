@@ -69,6 +69,8 @@ O objetivo deste repositório é evoluir gradualmente, do básico ao avançado, 
 | **TypeScript** | `^5.8.0` | Linguagem principal com tipagem estática e segura |
 | **Playwright Test** | `@playwright/test ^1.51.0` | Framework de automação web E2E, runner e asserções |
 | **ESLint + Playwright Plugin** | `eslint ^10.2.1` / `eslint-plugin-playwright ^2.10.2` | Análise estática e bloqueio de anti-patterns Playwright |
+| **Axe-core Playwright** | `@axe-core/playwright` | Auditoria automatizada de acessibilidade (WCAG 2.1 A/AA) |
+| **Faker.js** | `@faker-js/faker` | Geração dinâmica de massa de dados realista e única |
 | **Dotenv** | `^18.0.10` | Carregamento de variáveis de ambiente via `.env` |
 | **NPM** | Nativo do Node.js | Gerenciador de pacotes e scripts do projeto |
 
@@ -147,6 +149,7 @@ npm run test:smoke
 npm run test:regression
 npm run test:negative
 npm run test:mobile
+npm run test:a11y
 npm run test:cross-browser
 ```
 *(Para rodar `test:cross-browser` localmente, instale todos os navegadores antes com `npx playwright install`.)*
@@ -233,6 +236,8 @@ A estrutura segue o padrão de camadas para manter o código limpo, reutilizáve
 │   ├── 📄 checkout.data.ts     # Dados válidos de faturamento (Billings Information)
 │   └── 📄 scenarios.data.ts    # Mensagens esperadas e entradas de validação por funcionalidade
 ├── 📁 tests/
+│   ├── 📁 a11y/
+│   │   └── 📄 accessibility.spec.ts                         # Auditoria automatizada WCAG 2.1 A/AA (@axe-core/playwright)
 │   ├── 📁 e2e/
 │   │   ├── 📄 01-home.spec.ts                               # Passo 1: Acesso inicial ao site
 │   │   ├── 📄 02-positive-flows.spec.ts                     # Passo 2: Fluxos positivos de ponta a ponta (E2E)
@@ -262,3 +267,12 @@ A estrutura segue o padrão de camadas para manter o código limpo, reutilizáve
 - **Tags e Cross-Browser / Mobile**: Suíte organizada em `tests/e2e/` com tags nativas (`@smoke`, `@regression`, `@negative`) e projetos configurados para `chromium`, `firefox`, `webkit` e `mobile-chrome` (`Pixel 7`).
 - **Lint Playwright + Typecheck (`eslint .` & `tsc --noEmit`)**: Bloqueio automatizado de anti-patterns (`waitForTimeout`, `networkidle`, `test.only`) e validação estrita de tipos antes da execução.
 - **Locadores Semânticos & Zero `waitForTimeout`**: Priorização de locadores acessíveis (`getByRole`, `getByPlaceholder`), *Auto-Wait* nativo e *Web-First Assertions*.
+
+### 🎯 Diferenciais Arquiteturais e Por Que Foram Escolhidos
+
+1. **Auditoria de Acessibilidade WCAG 2.1 A/AA (`@axe-core/playwright` em `tests/a11y/accessibility.spec.ts`)**:
+   - **Por quê?** Qualidade de software vai além do funcional. Validar regras WCAG automaticamente nas telas críticas (`Home`, `Login`, `Cart` e `Checkout`) previne regressões que impediriam usuários com leitores de tela ou baixa visão de concluir compras. Adotamos uma *baseline* explícita (`KNOWN_LEGACY_A11Y_RULES`) para registrar os débitos preexistentes do site de demonstração sem gerar falsos negativos na suíte, bloqueando qualquer **nova** violação.
+2. **Massa de Dados Dinâmica (`@faker-js/faker` em `test-data/users.data.ts` e `test-data/checkout.data.ts`)**:
+   - **Por quê?** Em execuções paralelas (`fullyParallel: true`), dados fixos podem causar colisões de unicidade (e-mails duplicados em cadastros) ou mascarar bugs de validação com entradas sempre idênticas. As fábricas `createRandomUser()` e `createRandomBilling()` garantem dados únicos e realistas a cada execução.
+3. **Monitoramento Automático de Erros de Runtime (`runtimeMonitor` Auto-Fixture em `fixtures/pom.fixture.ts`)**:
+   - **Por quê?** Muitas vezes a interface parece funcionar mesmo quando há exceções JavaScript não tratadas (`pageerror`) ou falhas de servidor (`HTTP >= 500`) ocorrendo em segundo plano. Com uma *auto-fixture*, todos os testes E2E ganham observabilidade passiva automática sem duplicar código nos `.spec.ts`, anexando `runtime-errors.json` ao relatório caso algum erro ocorra.

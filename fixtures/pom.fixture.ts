@@ -1,4 +1,4 @@
-import { test as base } from '@playwright/test';
+import { test as base, expect } from '@playwright/test';
 import { HomePage } from '../pages/HomePage';
 import { LoginPage } from '../pages/LoginPage';
 import { RegisterPage } from '../pages/RegisterPage';
@@ -15,6 +15,7 @@ import { ContactPage } from '../pages/ContactPage';
 import { Error404Page } from '../pages/Error404Page';
 
 type PagesFixture = {
+  runtimeMonitor: void;
   homePage: HomePage;
   loginPage: LoginPage;
   registerPage: RegisterPage;
@@ -32,6 +33,33 @@ type PagesFixture = {
 };
 
 export const test = base.extend<PagesFixture>({
+  runtimeMonitor: [
+    async ({ page }, use, testInfo) => {
+      const pageErrors: string[] = [];
+      const serverErrors: string[] = [];
+
+      page.on('pageerror', (error) => {
+        pageErrors.push(error.message);
+      });
+      page.on('response', (response) => {
+        if (response.url().includes('automationpratice.com.br') && response.status() >= 500) {
+          serverErrors.push(`${response.status()} ${response.url()}`);
+        }
+      });
+
+      await use();
+
+      if (pageErrors.length > 0 || serverErrors.length > 0) {
+        await testInfo.attach('runtime-errors.json', {
+          body: JSON.stringify({ pageErrors, serverErrors }, null, 2),
+          contentType: 'application/json',
+        });
+      }
+      expect(pageErrors, 'Erros JavaScript não tratados (pageerror) na página').toEqual([]);
+      expect(serverErrors, 'Respostas HTTP 5xx da aplicação').toEqual([]);
+    },
+    { auto: true },
+  ],
   homePage: async ({ page }, use) => {
     await use(new HomePage(page));
   },
@@ -76,4 +104,4 @@ export const test = base.extend<PagesFixture>({
   },
 });
 
-export { expect } from '@playwright/test';
+export { expect };
