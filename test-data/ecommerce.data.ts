@@ -48,6 +48,18 @@ export const errorMessages = {
     minQuantityTitle: 'Sorry!',
     minQuantityText: 'Minimun Quantity Reached',
   },
+  wishlist: {
+    addedTitle: 'Success',
+    addedText: 'Added to Wishlist',
+    duplicateTitle: 'Failed',
+    duplicateText: 'Already Added in Wishlist',
+    emptyTitle: 'YOUR WISHLIST IS EMPTY',
+  },
+  search: {
+    keyword: 'Dress',
+    successTitle: 'Success',
+    successText: 'Check out the Results',
+  },
   checkout: {
     missingBillingBeforeOrder: 'Preencha os dados de pagamento!',
     requiredFields: [
@@ -85,4 +97,11 @@ export const defaultCartProducts = {
   firstItem: 'Fit-Flare Dress',
   secondItem: 'Midi Dress',
   thirdItem: 'Tulip Dress',
+};
+
+export const defaultWishlistProducts = {
+  firstItem: 'Boho Tops for Girls',
+  secondItem: 'Skater Dress',
+  thirdItem: 'Rocking Chair',
+  fourthItem: 'Easy Chair',
 };

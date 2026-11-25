@@ -27,6 +27,13 @@ O objetivo deste repositório é evoluir gradualmente, do básico ao avançado, 
   8. **Erro de Cupom Inválido no Carrinho**: Aplica um código de cupom inexistente e valida o modal `Error!!` (`Invalid Cuppon Code`).
   9. **Alerta de Quantidade Mínima do Produto**: Tenta reduzir a quantidade abaixo de `1` na página do produto e valida o alerta `Sorry!` (`Minimun Quantity Reached`).
   10. **Erros de Campos Obrigatórios e Bloqueio de Pedido no Checkout**: Valida o bloqueio `Preencha os dados de pagamento!` ao clicar em `Place Order` sem faturamento salvo e valida as 9 mensagens de erro obrigatórias do formulário `Billings Information`.
+- **Passo 4 — Wishlist (Favoritos) e Busca de Produtos (`tests/e2e-wishlist-and-search.spec.ts`)**:
+  1. **Adicionar Produto à Wishlist**: Favorita um produto (`Green Dress For Woman`), valida o modal `Success` (`Added to Wishlist`) e confirma sua presença na tabela de Favoritos (`/wishlist`).
+  2. **Bloqueio de Duplicidade na Wishlist**: Tenta favoritar o mesmo produto duas vezes seguidas e valida o modal de erro `Failed` (`Already Added in Wishlist`).
+  3. **Mover Produto da Wishlist para o Carrinho**: Clica em `Add to cart` dentro da tabela da Wishlist, confirma que o item saiu da lista de desejos e foi adicionado ao Carrinho (`/cart`).
+  4. **Remoção Individual da Wishlist**: Remove um item específico (`Skater Dress`) clicando na lixeira da linha e confirma que os demais permanecem.
+  5. **Esvaziar toda a Wishlist**: Remove todos os itens da lista de desejos e valida a mensagem `YOUR WISHLIST IS EMPTY`.
+  6. **Busca de Produtos (Search Modal)**: Abre o modal de pesquisa pela lupa do cabeçalho, busca por `Dress`, valida o modal `Success` (`Check out the Results`) e o redirecionamento automático para `/shop`.
 
 ---
 

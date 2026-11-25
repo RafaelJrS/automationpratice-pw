@@ -5,6 +5,7 @@ import { RegisterPage } from '../pages/RegisterPage';
 import { ProductPage } from '../pages/ProductPage';
 import { CartPage } from '../pages/CartPage';
 import { CheckoutPage } from '../pages/CheckoutPage';
+import { WishlistPage } from '../pages/WishlistPage';
 
 type PagesFixture = {
   homePage: HomePage;
@@ -13,6 +14,7 @@ type PagesFixture = {
   productPage: ProductPage;
   cartPage: CartPage;
   checkoutPage: CheckoutPage;
+  wishlistPage: WishlistPage;
 };
 
 export const test = base.extend<PagesFixture>({
@@ -33,6 +35,9 @@ export const test = base.extend<PagesFixture>({
   },
   checkoutPage: async ({ page }, use) => {
     await use(new CheckoutPage(page));
+  },
+  wishlistPage: async ({ page }, use) => {
+    await use(new WishlistPage(page));
   },
 });
 

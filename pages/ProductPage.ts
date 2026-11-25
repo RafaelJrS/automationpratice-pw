@@ -35,6 +35,13 @@ export class ProductPage {
     await expect(this.swalText).toContainText('Successfully added to your Cart');
   }
 
+  async addToWishlistAndExpectModal(expectedTitle: string, expectedMessage: string): Promise<void> {
+    await this.addToWishlistButton.click();
+    await expect(this.swalTitle).toHaveText(expectedTitle);
+    await expect(this.swalText).toHaveText(expectedMessage);
+    await this.swalConfirmButton.click();
+  }
+
   async decreaseQuantityBelowMinimumAndExpectWarning(title: string, message: string): Promise<void> {
     await this.minusQuantityButton.click();
     await expect(this.swalTitle).toHaveText(title);
