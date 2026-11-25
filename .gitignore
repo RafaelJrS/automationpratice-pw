@@ -13,8 +13,11 @@ node_modules/
 
 # Agente local (NÃO publicar no GitHub conforme solicitado)
 gunter.playwright.md
+context/
 .agents/
 .claude/
 .github/agents/
 .mcp.json
 .vscode/mcp.json
+.playwright-mcp/
+

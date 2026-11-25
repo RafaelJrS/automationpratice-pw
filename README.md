@@ -8,11 +8,14 @@ Projeto de automação de testes End-to-End (E2E) construído passo a passo para
 
 O objetivo deste repositório é evoluir gradualmente, do básico ao avançado, na automação do site `https://automationpratice.com.br/`.
 
-### Etapa Atual (Passo 1 — Base & Acesso Inicial):
-- Inicialização do ambiente Playwright com TypeScript estrito.
-- Configuração de `baseURL` apontando para `https://automationpratice.com.br`.
-- Estruturação da camada de **Page Objects (`pages/HomePage.ts`)** e **Fixtures (`fixtures/pom.fixture.ts`)**.
-- **Teste de Acesso Inicial (`tests/home.spec.ts`)**: Abre o navegador Chromium, acessa a página principal do Automation Practice e valida por meio de *Web-First Assertions* se a URL e os elementos principais de navegação (como o acesso ao Login) foram carregados com sucesso.
+### Etapa Atual (Passo 1 & Passo 2 — Base & Fluxos Positivos End-to-End):
+- **Passo 1 — Acesso Inicial (`tests/home.spec.ts`)**: Abre o navegador Chromium, acessa a página principal do Automation Practice e valida o carregamento da Home.
+- **Passo 2 — Fluxos Positivos End-to-End (`tests/e2e-positive.spec.ts`)**:
+  1. **Cadastro de Novo Usuário**: Navega até `/register`, preenche nome, e-mail e senha válidos e valida o modal `Cadastro realizado!` (`Bem-vindo <Nome>`) e redirecionamento para `/my-account`.
+  2. **Login de Usuário**: Navega até `/login`, autentica com credenciais válidas e valida o modal `Login realizado` (`Olá, <E-mail>`) e redirecionamento para `/my-account`.
+  3. **Adição de Produto ao Carrinho**: Acessa o produto (`Green Dress For Woman`), adiciona ao carrinho validando o modal `Success!` (`Successfully added to your Cart`) e confirma a presença do item na tabela do carrinho (`/cart`).
+  4. **Jornada Completa E2E (Login → Produto → Carrinho → Checkout → Pedido Concluído)**: Executa o fluxo de compra completo, preenche todos os dados de cobrança (*Billings Information*), valida a mensagem `Billings Information registred with success!` e finaliza o pedido validando o modal `Order success!` (`Congrats! Your order was created with sucess!`).
+  5. **Inscrição na Newsletter**: Preenche o e-mail no rodapé e valida o modal `Success` (`Thank you for your Subscribtion`).
 
 ---
 
