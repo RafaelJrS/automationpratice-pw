@@ -5,6 +5,7 @@ export class ProductPage {
   readonly productTitle: Locator;
   readonly addToCartButton: Locator;
   readonly addToWishlistButton: Locator;
+  readonly addToCompareButton: Locator;
   readonly minusQuantityButton: Locator;
   readonly swalTitle: Locator;
   readonly swalText: Locator;
@@ -15,6 +16,7 @@ export class ProductPage {
     this.productTitle = page.locator('#product_single_one h3');
     this.addToCartButton = page.locator('#product_single_one').getByRole('link', { name: 'Add To Cart' });
     this.addToWishlistButton = page.locator('#product_single_one').getByRole('link', { name: 'Add To Wishlist' });
+    this.addToCompareButton = page.locator('#product_single_one').getByRole('link', { name: 'Add To Compare' });
     this.minusQuantityButton = page.locator('#product_count_form_two button').first();
     this.swalTitle = page.locator('#swal2-title');
     this.swalText = page.locator('#swal2-html-container');
@@ -40,6 +42,12 @@ export class ProductPage {
     await expect(this.swalTitle).toHaveText(expectedTitle);
     await expect(this.swalText).toHaveText(expectedMessage);
     await this.swalConfirmButton.click();
+  }
+
+  async addToCompareAndExpectModal(expectedTitle: string, expectedMessage: string): Promise<void> {
+    await this.addToCompareButton.click();
+    await expect(this.swalTitle).toHaveText(expectedTitle);
+    await expect(this.swalText).toContainText(expectedMessage);
   }
 
   async decreaseQuantityBelowMinimumAndExpectWarning(title: string, message: string): Promise<void> {

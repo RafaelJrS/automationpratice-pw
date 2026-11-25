@@ -60,6 +60,24 @@ export const errorMessages = {
     successTitle: 'Success',
     successText: 'Check out the Results',
   },
+  myAccount: {
+    sampleOrderId: '#78153',
+    logoutTitle: 'Logout Sucessfull',
+    logoutText: 'Thank You',
+  },
+  orderTracking: {
+    orderId: '78153',
+    billingEmail: 'rafael.qa@qazando.com',
+    completedHeading: 'Your order is completed!',
+  },
+  compare: {
+    addedTitle: 'Success!',
+    addedText: 'Successfully added to Compare List',
+    duplicateTitle: 'Failed!',
+    duplicateText: 'Already Added in Compare List',
+    emptyTitle: 'PRODUCT NOT FOUND',
+    emptySubtitle: 'Sorry Mate... No Item Found Inside Your Compare List!',
+  },
   checkout: {
     missingBillingBeforeOrder: 'Preencha os dados de pagamento!',
     requiredFields: [
@@ -91,6 +109,16 @@ export const validBilling: BillingDetails = {
 export const sampleProduct = {
   id: 1,
   name: 'Green Dress For Woman',
+};
+
+export const newCompareProduct = {
+  id: 3,
+  name: 'V-Neck Dress',
+};
+
+export const defaultCompareProducts = {
+  firstItem: 'Green Dress For Woman',
+  secondItem: 'T-Shirt For Men',
 };
 
 export const defaultCartProducts = {

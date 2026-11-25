@@ -34,6 +34,13 @@ O objetivo deste repositório é evoluir gradualmente, do básico ao avançado, 
   4. **Remoção Individual da Wishlist**: Remove um item específico (`Skater Dress`) clicando na lixeira da linha e confirma que os demais permanecem.
   5. **Esvaziar toda a Wishlist**: Remove todos os itens da lista de desejos e valida a mensagem `YOUR WISHLIST IS EMPTY`.
   6. **Busca de Produtos (Search Modal)**: Abre o modal de pesquisa pela lupa do cabeçalho, busca por `Dress`, valida o modal `Success` (`Check out the Results`) e o redirecionamento automático para `/shop`.
+- **Passo 5 — Minha Conta, Rastreio de Pedido e Comparação de Produtos (`tests/e2e-account-tracking-and-compare.spec.ts`)**:
+  1. **Navegação no Painel Minha Conta (`My Account`)**: Após o login, percorre as abas `Orders`, `Downloads`, `Addresses` e `Account details` validando pedidos e configurações.
+  2. **Logout do Usuário**: Executa o logout pelo menu lateral do painel Minha Conta, valida o modal `Logout Sucessfull` (`Thank You`) e o retorno para `/login`.
+  3. **Rastreio de Pedido (`Order Tracking`)**: Em `/order-tracking`, informa o `Order ID` e o `Billing Email`, clica em `Track` e valida a tela de conclusão `/order-complete` (`Your order is completed!`).
+  4. **Adicionar Novo Produto à Comparação (`Compare`)**: Adiciona o produto `V-Neck Dress` à lista de comparação, valida o modal `Success!` (`Successfully added to Compare List`) e verifica sua presença na tabela de `/compare`.
+  5. **Bloqueio de Duplicidade na Comparação**: Tenta adicionar um produto que já está na lista de comparação e valida o modal de erro `Failed!` (`Already Added in Compare List`).
+  6. **Mover da Comparação para o Carrinho e Esvaziar Comparação**: Move o primeiro item da tabela de comparação para o carrinho (`ADD TO CART`), remove o segundo na lixeira e valida a mensagem `PRODUCT NOT FOUND` (`Sorry Mate... No Item Found Inside Your Compare List!`).
 
 ---
 
